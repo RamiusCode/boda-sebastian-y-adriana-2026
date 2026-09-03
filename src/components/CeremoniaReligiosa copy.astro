@@ -2,8 +2,7 @@
 // src/components/CeremoniaReligiosa.astro
 // Franja de papel crema rasgada con el "Religioso" y, debajo, sobre el
 // papel de la página: el dibujo de la iglesia, la dirección del templo y
-// el botón que abre el mapa. Al final, la nota del bus que sale para la
-// recepción apenas termina la ceremonia.
+// el botón que abre el mapa.
 //
 // Medidas del diseño, en % del ancho de la columna:
 //   banda    21% de alto
@@ -26,16 +25,6 @@ const textoBoton = "Ubicación";
 // corto del lugar (maps.app.goo.gl/...), pegalo acá y listo.
 const mapa =
     "https://www.google.com/maps/search/?api=1&query=Iglesia+del+Se%C3%B1or+de+la+Exaltaci%C3%B3n+Av.+H%C3%A9ctor+Ormachea+Obrajes+La+Paz";
-
-/*
-   La nota del transporte. Va debajo del botón, en una tarjetita del
-   mismo papel crema: es un dato práctico, no tiene que competir con la
-   dirección.
-*/
-const transporte = {
-    titulo: "Contaremos con transporte",
-    detalle: "El bus partirá finalizando la ceremonia religiosa",
-};
 // ──────────────────────────────────────────────────────────────
 ---
 
@@ -67,14 +56,6 @@ const transporte = {
         >
             {textoBoton}
         </a>
-
-        <div class="transporte">
-            <div class="bus" aria-hidden="true"></div>
-            <p class="transporte-titulo font-freestyle">{transporte.titulo}</p>
-            <p class="transporte-detalle font-cormorant">
-                {transporte.detalle}
-            </p>
-        </div>
     </div>
 </section>
 
@@ -215,7 +196,7 @@ const transporte = {
         margin: 0 auto;
         text-align: center;
         color: #643e1a;
-        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
+        font-size: clamp(1.8rem, 8.2vw, 2.25rem);
         line-height: 1.2;
     }
 
@@ -271,60 +252,6 @@ const transporte = {
         transform: translateY(-2px);
         box-shadow: 0 8px 18px rgba(90, 65, 25, 0.18);
     }
-
-    /* ── La nota del transporte ────────────────────────────── */
-    /*
-       Mismo papel y misma sombra que el botón, para que se lea como otra
-       tarjetita de la sección y no como un cartel aparte.
-    */
-    .transporte {
-        width: 86%;
-        max-width: 22rem;
-        margin-top: 2.2rem;
-        padding: 1.1rem 1.4rem 1.3rem;
-        text-align: center;
-        background: #fbf5de;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(90, 65, 25, 0.12);
-    }
-
-    /*
-       El dibujo del bus. El png viene en negro, así que se usa de máscara
-       y el color lo pone el fondo, para que quede en el mismo marrón que
-       los títulos. Si el navegador no entiende mask, se ve el png tal
-       cual. La caja es cuadrada como el archivo y el bus ocupa la franja
-       del medio: los márgenes negativos se comen ese aire de arriba y de
-       abajo.
-    */
-    .bus {
-        width: 4rem;
-        height: 4rem;
-        margin: -0.5rem auto -0.8rem;
-        background: url("/imagenes/bus.png") center / contain no-repeat;
-    }
-
-    @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
-        .bus {
-            background: #643e1a;
-            -webkit-mask: url("/imagenes/bus.png") center / contain no-repeat;
-            mask: url("/imagenes/bus.png") center / contain no-repeat;
-        }
-    }
-
-    .transporte-titulo {
-        color: #643e1a;
-        font-size: clamp(1.7rem, 7.4vw, 2rem);
-        line-height: 1.3;
-    }
-
-    /* Más chico y espaciado, como el pie de las otras tarjetas */
-    .transporte-detalle {
-        margin-top: 0.5rem;
-        color: #7a5a2e;
-        font-size: clamp(1rem, 4.4vw, 1.12rem);
-        line-height: 1.5;
-        letter-spacing: 0.02em;
-    }
 </style>
 
 <script>
@@ -363,7 +290,6 @@ const transporte = {
                 cuerpo.querySelector(".iglesia"),
                 ...cuerpo.querySelectorAll(".linea"),
                 cuerpo.querySelector(".boton"),
-                cuerpo.querySelector(".transporte"),
             ].filter(Boolean),
             { opacity: 0, y: 16 },
             {

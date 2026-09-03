@@ -1,8 +1,8 @@
 ---
 // src/components/Confirmar.astro
-// La foto de los novios rasgada abajo, la franja de papel con el saludo,
-// el pedido de confirmación con su botón, el pase y el cierre con el
-// monograma dentro de la guirnalda.
+// La foto de los novios rasgada arriba y abajo, la franja de papel con el
+// saludo, el pedido de confirmación con su botón, el pase y el cierre con
+// el monograma dentro de la guirnalda.
 //
 // Medidas del diseño, en % del ancho de la columna:
 //   banda   27% de alto · botón 75% de ancho
@@ -37,7 +37,7 @@ const enlaceConfirmar = `https://wa.me/${telefono}?text=${encodeURIComponent(men
 ---
 
 <section id="confirmar" class="seccion">
-    <!-- La foto va a sangre y rasgada abajo -->
+    <!-- La foto va a sangre y rasgada arriba y abajo -->
     <img
         id="foto-confirmar"
         src={foto}
@@ -96,8 +96,10 @@ const enlaceConfirmar = `https://wa.me/${telefono}?text=${encodeURIComponent(men
     }
 
     /*
-       La foto, a sangre y con el rasgado abajo. El de arriba no lleva:
-       arranca contra la sección anterior.
+       La foto, a sangre y rasgada por los dos lados. El de arriba es el
+       mismo trazo de abajo espejado (y = 100 - y), así el mordisco mide
+       los mismos píxeles arriba y abajo; por ahí asoma el fondo de la
+       página.
     */
     /*
        z-index 1: la franja de abajo se le mete por debajo con un margen
@@ -113,8 +115,62 @@ const enlaceConfirmar = `https://wa.me/${telefono}?text=${encodeURIComponent(men
         height: auto;
         user-select: none;
         clip-path: polygon(
-            0 0,
-            100% 0,
+            0.00% 3.81%,
+            1.82% 3.65%,
+            3.64% 2.43%,
+            5.45% 2.98%,
+            7.27% 3.04%,
+            9.09% 3.78%,
+            10.91% 3.13%,
+            12.73% 3.04%,
+            14.55% 2.87%,
+            16.36% 2.35%,
+            18.18% 1.30%,
+            20.00% 1.23%,
+            21.82% 0.30%,
+            23.64% 0.96%,
+            25.45% 1.62%,
+            27.27% 1.75%,
+            29.09% 2.47%,
+            30.91% 4.01%,
+            32.73% 3.33%,
+            34.55% 3.15%,
+            36.36% 2.12%,
+            38.18% 2.10%,
+            40.00% 2.41%,
+            41.82% 1.92%,
+            43.64% 1.39%,
+            45.45% 2.43%,
+            47.27% 3.91%,
+            49.09% 3.40%,
+            50.91% 2.26%,
+            52.73% 3.53%,
+            54.55% 2.91%,
+            56.36% 3.32%,
+            58.18% 5.00%,
+            60.00% 2.44%,
+            61.82% 2.36%,
+            63.64% 2.50%,
+            65.45% 3.83%,
+            67.27% 3.52%,
+            69.09% 3.62%,
+            70.91% 3.27%,
+            72.73% 2.87%,
+            74.55% 3.53%,
+            76.36% 3.80%,
+            78.18% 3.82%,
+            80.00% 3.74%,
+            81.82% 2.55%,
+            83.64% 4.14%,
+            85.45% 3.35%,
+            87.27% 2.18%,
+            89.09% 1.26%,
+            90.91% 1.03%,
+            92.73% 1.47%,
+            94.55% 2.00%,
+            96.36% 3.13%,
+            98.18% 2.53%,
+            100.00% 3.49%,
             100.00% 96.51%,
             98.18% 97.47%,
             96.36% 96.87%,
@@ -251,7 +307,7 @@ const enlaceConfirmar = `https://wa.me/${telefono}?text=${encodeURIComponent(men
         margin: 0 auto;
         text-align: center;
         color: #643e1a;
-        font-size: clamp(1.6rem, 7.4vw, 2rem);
+        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
         line-height: 1.25;
     }
 

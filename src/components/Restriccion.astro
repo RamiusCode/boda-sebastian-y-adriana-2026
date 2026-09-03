@@ -1,7 +1,7 @@
 ---
 // src/components/Restriccion.astro
 // Franja de papel crema rasgada con el "Celebración Para Adultos" y,
-// debajo, el pedido y el cierre.
+// debajo, el cartel de "sin niños", el pedido y el cierre.
 //
 // Acá el ramo va DETRÁS del papel, como en el cronograma: asoma por
 // encima del filo rasgado en vez de apoyarse sobre él.
@@ -40,6 +40,8 @@ const cierre = "¡Niños a la cama!";
     </div>
 
     <div id="cuerpo-restriccion" class="cuerpo">
+        <div class="cartel" aria-hidden="true"></div>
+
         <div class="parrafo font-cormorant">
             {parrafo.map((linea) => <p>{linea}</p>)}
         </div>
@@ -209,7 +211,7 @@ const cierre = "¡Niños a la cama!";
         margin: 0 auto;
         text-align: center;
         color: #643e1a;
-        font-size: clamp(1.8rem, 8.2vw, 2.25rem);
+        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
         line-height: 1.2;
     }
 
@@ -220,6 +222,29 @@ const cierre = "¡Niños a la cama!";
         align-items: center;
         padding: 3rem 1.2rem 0;
         text-align: center;
+    }
+
+    /*
+       El cartel de "sin niños". Como el bus de la ceremonia: el png viene
+       en negro, así que se usa de máscara y el color lo pone el fondo,
+       para que quede en el mismo marrón que el texto. Si el navegador no
+       entiende mask, se ve el png tal cual.
+    */
+    .cartel {
+        width: 27%;
+        max-width: 7rem;
+        aspect-ratio: 1;
+        margin-bottom: 1.8rem;
+        background: url("/imagenes/restriccion.png") center / contain no-repeat;
+    }
+
+    @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+        .cartel {
+            background: #643e1a;
+            -webkit-mask: url("/imagenes/restriccion.png") center / contain
+                no-repeat;
+            mask: url("/imagenes/restriccion.png") center / contain no-repeat;
+        }
     }
 
     .parrafo {
@@ -310,7 +335,11 @@ const cierre = "¡Niños a la cama!";
         );
 
         gsap.fromTo(
-            [...cuerpo.querySelectorAll(".parrafo p"), cuerpo.querySelector(".cierre")],
+            [
+                cuerpo.querySelector(".cartel"),
+                ...cuerpo.querySelectorAll(".parrafo p"),
+                cuerpo.querySelector(".cierre"),
+            ].filter(Boolean),
             { opacity: 0, y: 16 },
             {
                 opacity: 1,

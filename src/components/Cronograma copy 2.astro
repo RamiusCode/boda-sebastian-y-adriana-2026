@@ -5,10 +5,12 @@
 // siete cuerdas que las van uniendo.
 //
 // ── CÓMO ESTÁ ARMADO ──────────────────────────────────────────
-// La tarjeta tiene proporción fija (284 x 390) y todo lo de adentro va en
-// posición absoluta, en % de la tarjeta. Así el zigzag se mantiene igual
-// en cualquier pantalla: si el ancho cambia, el alto cambia con él y las
-// piezas acompañan.
+// La tarjeta tiene proporción fija (284 x 395: el ancho del diseño, con el
+// alto estirado para que entren los rótulos) y todo lo de adentro va en
+// posición absoluta con las coordenadas medidas del diseño,
+// en % de la tarjeta. Así el zigzag se mantiene igual en cualquier
+// pantalla: si el ancho cambia, el alto cambia con él y las piezas
+// acompañan.
 //
 // El orden es el que se ve al recorrerlo: religioso, línea 1, salón,
 // línea 2, vals, línea 3, brindis... y así hasta la despedida.
@@ -16,90 +18,41 @@
 // ── DATOS EDITABLES ───────────────────────────────────────────
 const titulo = "Cronograma";
 
-// Las dos columnas del zigzag, en % del ancho de la tarjeta. Están
-// espejadas respecto al centro para que el recorrido se vea a plomo.
-const COL_IZQ = 29.8;
-const COL_DER = 70.2;
-
-// x = la columna · y = borde de arriba del DIBUJO · w = ancho de la caja.
-// Los tres en % de la tarjeta.
+// x = centro de la acuarela · y = borde de arriba · w = ancho
+// Los tres van en % de la tarjeta.
 //
-// Ojo con el y: no es el borde de la caja del <img> sino el del dibujo en
-// sí (ver `tinta` más abajo). En cada columna los pasos están separados de
-// modo que el rótulo de uno termine ~8 px (de los 284 del diseño) antes de
-// que arranque el dibujo del siguiente; con las medidas originales del
-// mockup el "11:00" del religioso caía sobre el vestido del vals, el
-// "15:30" sobre la cena y el "16:00" sobre la torta.
+// El y de cada paso NO es el del diseño original: abajo de cada acuarela
+// hay que dejar lugar para el rótulo, que son dos renglones (nombre y
+// hora). Con las medidas del diseño el "11:00" del religioso caía justo
+// arriba del vestido del vals, el "15:30" del brindis sobre la cena y el
+// "16:00" de la fiesta sobre la torta. Así que los pasos de cada columna
+// se separaron hasta que el rótulo de uno termina ~6 px (del diseño)
+// antes de que arranque el dibujo del siguiente, y la tarjeta se alargó
+// de 365 a 395 para que todo siga entrando.
 const pasos = [
-    { img: "religioso", nombre: "Religioso", hora: "11:00", x: COL_IZQ, y: 3.1, w: 18.8 },
-    { img: "salon", nombre: "Salón", hora: "14:00", x: COL_DER, y: 5.9, w: 15.8 },
-    { img: "vals", nombre: "Vals", hora: "15:00", x: COL_IZQ, y: 27.3, w: 11.2 },
-    { img: "brindis", nombre: "Brindis", hora: "15:30", x: COL_DER, y: 31.2, w: 12.9 },
-    { img: "fiesta", nombre: "Fiesta", hora: "16:00", x: COL_IZQ, y: 48.9, w: 12.9 },
-    { img: "cena", nombre: "Cena", hora: "19:00", x: COL_DER, y: 53.0, w: 12.9 },
-    { img: "torta", nombre: "Torta", hora: "20:00", x: COL_IZQ, y: 73.9, w: 14.1 },
-    { img: "despedida", nombre: "Despedida de los Novios", hora: "", x: COL_DER, y: 78.1, w: 12.9 },
+    { img: "religioso", nombre: "Religioso", hora: "11:00", x: 32.3, y: 2.1, w: 18.8 },
+    { img: "salon", nombre: "Salón", hora: "14:00", x: 71.8, y: 3.8, w: 15.8 },
+    { img: "vals", nombre: "Vals", hora: "15:00", x: 30.8, y: 26.8, w: 11.2 },
+    { img: "brindis", nombre: "Brindis", hora: "15:30", x: 74.5, y: 30.6, w: 12.9 },
+    { img: "fiesta", nombre: "Fiesta", hora: "16:00", x: 28.8, y: 48.1, w: 12.9 },
+    { img: "cena", nombre: "Cena", hora: "19:00", x: 69.8, y: 52.4, w: 12.9 },
+    { img: "torta", nombre: "Torta", hora: "20:00", x: 29.3, y: 73.9, w: 14.1 },
+    { img: "despedida", nombre: "Despedida de los Novios", hora: "", x: 60.4, y: 78.5, w: 12.9 },
 ];
 
 // Las cuerdas que unen un paso con el siguiente. Acá x es el borde
-// izquierdo, no el centro. Cada una queda colgada entre los dos dibujos
-// que une, en el mismo lugar relativo que tenía en el mockup.
+// izquierdo, no el centro.
+// Cada una bajó el promedio de lo que bajaron los dos pasos que une, así
+// sigue quedando colgada entre los mismos dos dibujos.
 const lineas = [
-    { n: 1, x: 38.7, y: 9.0, w: 22.8 },
-    { n: 2, x: 40.2, y: 21.0, w: 25.8 },
-    { n: 3, x: 36.1, y: 32.0, w: 27.7 },
-    { n: 4, x: 37.0, y: 40.6, w: 24.7 },
-    { n: 5, x: 38.5, y: 55.6, w: 27.2 },
-    { n: 6, x: 42.3, y: 66.9, w: 21.3 },
-    { n: 7, x: 44.2, y: 75.1, w: 19.4 },
+    { n: 1, x: 41.1, y: 8.4, w: 21.7 },
+    { n: 2, x: 41.7, y: 20.6, w: 25.2 },
+    { n: 3, x: 38.1, y: 32.0, w: 28.8 },
+    { n: 4, x: 36.4, y: 40.2, w: 27.6 },
+    { n: 5, x: 37.0, y: 55.3, w: 27.0 },
+    { n: 6, x: 41.7, y: 67.0, w: 20.5 },
+    { n: 7, x: 40.5, y: 76.4, w: 14.7 },
 ];
-
-/*
-   Las ocho acuarelas vienen con transparente de sobra alrededor, y cada
-   una con distinto margen: la cena tiene el dibujo un 10% corrido a la
-   izquierda de su archivo, el brindis un 7,8%, el vals un 6,4% a la
-   derecha, y la torta arrastra casi un cuarto de alto vacío abajo. Si se
-   las apoya por la caja del <img>, el dibujo queda descentrado respecto a
-   su rótulo y las columnas se ven chuecas aunque las x sean iguales.
-
-   Acá va, medido del canal alfa de cada PNG, el tamaño del archivo y la
-   caja de la tinta (lo que de verdad se ve). Si algún día se cambia una
-   acuarela, hay que volver a medirla.
-*/
-const tinta = {
-    religioso: { w: 259, h: 278, x0: 31, x1: 238, y0: 5, y1: 246 },
-    salon: { w: 252, h: 239, x0: 5, x1: 223, y0: 30, y1: 225 },
-    vals: { w: 210, h: 287, x0: 29, x1: 208, y0: 9, y1: 269 },
-    brindis: { w: 204, h: 245, x0: 5, x1: 167, y0: 20, y1: 223 },
-    fiesta: { w: 178, h: 298, x0: 11, x1: 156, y0: 10, y1: 267 },
-    cena: { w: 240, h: 214, x0: 9, x1: 183, y0: 9, y1: 197 },
-    torta: { w: 217, h: 289, x0: 22, x1: 205, y0: 4, y1: 221 },
-    despedida: { w: 203, h: 185, x0: 7, x1: 189, y0: 12, y1: 175 },
-};
-
-/*
-   De esa medición salen los tres corrimientos de cada dibujo:
-
-     dx      lo corre en horizontal hasta que la tinta queda centrada en la
-             columna (va en % del ancho del propio <img>).
-     arriba  se come el transparente de arriba, así el y de la tabla es el
-             borde real del dibujo.
-     abajo   se come el del pie, así el rótulo queda siempre a la misma
-             distancia del dibujo y no flotando (el caso de la torta).
-
-   arriba y abajo van en % del ancho del paso, que es contra lo que el
-   navegador resuelve los márgenes en %.
-*/
-const ajuste = (img: string) => {
-    const t = tinta[img as keyof typeof tinta];
-    const alto = (t.h / t.w) * 100; // alto del <img>, en % de su ancho
-    const centro = ((t.x0 + (t.x1 - t.x0 + 1) / 2) / t.w) * 100;
-    return {
-        dx: 50 - centro,
-        arriba: -(t.y0 / t.h) * alto,
-        abajo: -((t.h - 1 - t.y1) / t.h) * alto,
-    };
-};
 // ──────────────────────────────────────────────────────────────
 ---
 
@@ -139,9 +92,7 @@ const ajuste = (img: string) => {
             }
 
             {
-                pasos.map((paso) => {
-                    const a = ajuste(paso.img);
-                    return (
+                pasos.map((paso) => (
                     <div
                         class="paso"
                         style={`left:${paso.x}%; top:${paso.y}%; width:${paso.w}%`}
@@ -151,7 +102,6 @@ const ajuste = (img: string) => {
                             alt=""
                             aria-hidden="true"
                             class="dibujo"
-                            style={`transform:translateX(${a.dx.toFixed(2)}%); margin-top:${a.arriba.toFixed(2)}%; margin-bottom:${a.abajo.toFixed(2)}%`}
                         />
                         <p class="rotulo font-freestyle">
                             {paso.nombre}
@@ -163,8 +113,7 @@ const ajuste = (img: string) => {
                             )}
                         </p>
                     </div>
-                    );
-                })
+                ))
             }
         </div>
 
@@ -338,7 +287,7 @@ const ajuste = (img: string) => {
         margin: 0 auto;
         text-align: center;
         color: #643e1a;
-        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
+        font-size: clamp(2.05rem, 9.4vw, 2.55rem);
         line-height: 1.2;
     }
 
@@ -350,7 +299,7 @@ const ajuste = (img: string) => {
     }
 
     /*
-       Proporción fija: el ancho del diseño (284) por 390 de alto — el mockup
+       Proporción fija: el ancho del diseño (284) por 395 de alto — el diseño
        traía 365, pero ahí los rótulos de dos renglones se comían el dibujo
        de abajo.
        Como todo adentro va en % de la tarjeta, al cambiar el ancho el alto
@@ -362,7 +311,7 @@ const ajuste = (img: string) => {
         width: 84%;
         max-width: 24rem;
         margin: 0 auto;
-        aspect-ratio: 284 / 390;
+        aspect-ratio: 284 / 395;
         padding: 4% 3%;
         background: #ffffff;
         border-radius: 12px;
@@ -377,17 +326,12 @@ const ajuste = (img: string) => {
         user-select: none;
     }
 
-    /* El translateX centra el paso en su columna */
+    /* El translateX centra el paso en la coordenada x del diseño */
     .paso {
         position: absolute;
         transform: translateX(-50%);
     }
 
-    /*
-       El translateX y los márgenes negativos los pone `ajuste` en línea,
-       uno por dibujo: corren el <img> hasta que la tinta queda centrada en
-       la columna y se comen el transparente de arriba y del pie.
-    */
     .dibujo {
         display: block;
         width: 100%;
@@ -399,14 +343,11 @@ const ajuste = (img: string) => {
        El rótulo puede ser más ancho que el dibujo ("Despedida de los
        Novios"), así que se le da más ancho y se lo recentra con el margen
        negativo. Si no, el nombre largo empujaría la columna.
-
-       El aire va en cqw y no en %: en % se mide contra el ancho del paso, y
-       como cada dibujo tiene el suyo, el hueco salía distinto en cada uno.
     */
     .rotulo {
         width: 240%;
         margin-left: -70%;
-        margin-top: 1.3cqw;
+        margin-top: 2%;
         text-align: center;
         color: #643e1a;
         font-size: 4.6cqw;
