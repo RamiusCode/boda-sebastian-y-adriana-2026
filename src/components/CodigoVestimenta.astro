@@ -19,7 +19,7 @@ const aviso = "El blanco está reservado para la novia";
 
 <section id="codigo-vestimenta" class="seccion">
     <div class="marco-banda">
-        <!-- El ramo se apoya sobre el papel: va por encima (z-index 2) -->
+        <!-- El ramo va por detrás del papel (z-index 0) y asoma por el filo -->
         <img
             src="/imagenes/florlateral2.png"
             alt=""
@@ -64,16 +64,17 @@ const aviso = "El blanco está reservado para la novia";
     }
 
     /*
-       z-index 2: por delante de la banda (que va con 1). El ramo ya viene
-       con los tulipanes mirando hacia arriba, así que no se voltea.
+       z-index 0: DETRÁS de la banda (que va con 1), así el ramo asoma por
+       el filo rasgado en vez de pisar el papel. El ramo ya viene con los
+       tulipanes mirando hacia arriba, así que no se voltea.
     */
     .flores {
         position: absolute;
-        top: -5rem;
+        top: -6rem;
         left: -1rem;
         width: 24%;
         height: auto;
-        z-index: 2;
+        z-index: 0;
         pointer-events: none;
         user-select: none;
         filter: drop-shadow(0 6px 10px rgba(90, 70, 20, 0.18));
