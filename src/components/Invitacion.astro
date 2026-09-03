@@ -30,6 +30,16 @@ import Despedida from "./Despedida.astro";
 import BotonMusica from "./BotonMusica.astro";
 import Contador from "./Contador.astro";
 import Calendario from "./Calendario.astro";
+
+/*
+   Cuántos lugares reserva esta invitación. No se toca acá: lo manda la
+   página. index.astro no le pasa nada y queda en 0, o sea sin pase;
+   pase[cantidad].astro le pasa el número de la URL (/pase1, /pase2...).
+*/
+export interface Props {
+    pases?: number;
+}
+const { pases = 0 } = Astro.props;
 ---
 
 <!-- PORTADA (cubre todo hasta que se toca el botón de ingreso) -->
@@ -56,7 +66,11 @@ import Calendario from "./Calendario.astro";
     <Historia />
 
 
-    <Confirmar />
+    <!--
+       El pase sale de la página: /pase2 da "Pase para dos personas".
+       En el index no llega número, así que no se dibuja el pase.
+    -->
+    <Confirmar pases={pases} />
 
 
     <!-- <Dedicatoria /> -->

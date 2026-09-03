@@ -7,6 +7,19 @@
 // Medidas del diseño, en % del ancho de la columna:
 //   banda   27% de alto · botón 75% de ancho
 
+/*
+   Cuántos lugares reserva la invitación. Se pasa desde Invitacion.astro
+   —<Confirmar pases={2} />— para no tener que venir a editar acá adentro
+   cada vez que cambia el pase de un invitado.
+
+   En 0 (o sin pasar nada) la invitación va SIN pase: no se dibuja la
+   barrita. Es la del index, la que se comparte en un grupo.
+*/
+export interface Props {
+    pases?: number;
+}
+const { pases = 0 } = Astro.props;
+
 // ── DATOS EDITABLES ───────────────────────────────────────────
 const foto = "/imagenes/foto3.webp";
 const titulo = "Querida Familia Y Amigos";
@@ -18,7 +31,6 @@ const parrafos = [
 ];
 
 const textoBoton = "Confirmar asistencia";
-const pase = "Pase para una persona";
 const cierre = "Te esperamos";
 const monograma = "S & A";
 
@@ -33,6 +45,31 @@ const novios = "Sebastián y Adriana";
 const fechaBoda = "19 de septiembre de 2026";
 const mensaje = `Me complace confirmar mi asistencia a la boda de ${novios}, el ${fechaBoda}.`;
 const enlaceConfirmar = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+/*
+   El pase se arma solo con el número que llega por props: 1 da "Pase para
+   una persona" y 2 "Pase para dos personas". Si hiciera falta un número
+   más alto que los de la lista, cae al dígito ("Pase para 12 personas").
+   En 0 queda en null y más abajo no se dibuja nada.
+*/
+const enLetras = [
+    "", // el 0 no se usa: está para que el 1 caiga en "una"
+    "una",
+    "dos",
+    "tres",
+    "cuatro",
+    "cinco",
+    "seis",
+    "siete",
+    "ocho",
+    "nueve",
+    "diez",
+];
+const cantidad = enLetras[pases] ?? String(pases);
+const pase =
+    pases > 0
+        ? `Pase para ${cantidad} ${pases === 1 ? "persona" : "personas"}`
+        : null;
 // ──────────────────────────────────────────────────────────────
 ---
 
@@ -63,7 +100,7 @@ const enlaceConfirmar = `https://wa.me/${telefono}?text=${encodeURIComponent(men
             {textoBoton}
         </a>
 
-        <p class="pase font-cormorant">{pase}</p>
+        {pase && <p class="pase font-cormorant">{pase}</p>}
 
         <p class="cierre font-cormorant">{cierre}</p>
     </div>
