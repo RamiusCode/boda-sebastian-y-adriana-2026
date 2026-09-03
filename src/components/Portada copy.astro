@@ -2,8 +2,7 @@
 // src/components/Portada.astro - Portada tipo tarjeta: el sobre dorado va
 // centrado sobre el papel del fondo, los nombres escritos en la solapa y,
 // debajo del sobre, la llamada "Tenemos una noticia... pulsa aquí".
-// El sobre entero es el botón: abre la invitación y baja a NombresFlores.
-// La música no se toca acá: la maneja Reproductor.astro.
+// El sobre entero es el botón: arranca la música y baja a NombresFlores.
 // ── DATOS EDITABLES ───────────────────────────────────────────
 // Sin tilde a propósito: la Elegant DEMO no trae "á" y el diseño tampoco
 // la lleva.
@@ -315,9 +314,16 @@ const llamada2 = "Pulsa aqui";
 
                 gsap.killTweensOf(boton);
 
-                // Acá NO se toca la música: de eso se encarga Reproductor,
-                // que crea la melodía él mismo cuando le dan al play. El
-                // sobre solo abre la invitación.
+                // La melodía de toda la invitación: el reproductor de más
+                // abajo se engancha a esta misma, no crea otra.
+                const audio = new Audio("/musica/melodia2.mp3");
+                audio.loop = true;
+                audio.volume = 0.5;
+                audio.play().catch((error) => {
+                    console.log("❌ Error al reproducir audio:", error);
+                });
+                (window as any).audioGlobal = audio;
+                (window as any).estaReproduciendoGlobal = true;
 
                 gsap.timeline()
                     // El sobre primero se hunde, como si lo apretaran, y

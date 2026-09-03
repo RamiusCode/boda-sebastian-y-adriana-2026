@@ -1,0 +1,382 @@
+---
+// src/components/Foto1.astro
+// Foto a todo el ancho en blanco y negro, cortada abajo como papel
+// rasgado. Debajo asoma una tira color crema —también rasgada— y encima
+// de las dos, cruzando el corte, la guirnalda con los nombres.
+//
+// Medidas sacadas del diseño, en % del ancho de la columna:
+//   foto      61%  de alto (es el alto natural de foto1.webp, 1500x920)
+//   crema     28.9% de alto, asomando debajo del rasgado
+//   guirnalda 41% de ancho, centrada, arrancando al 69.4%
+//
+// Los dos rasgados son clip-path: el de la foto deja ver la crema y el de
+// la tira deja ver el papel de la página.
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const foto = "/imagenes/foto1.webp";
+const alt = "Sebastián y Adriana festejando con una botella de champán";
+const novio = "Sebastian";
+const novia = "Adriana";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="foto-rasgada" class="seccion">
+    <!-- La tira crema: la foto va adentro y el rasgado de abajo la corta -->
+    <div id="foto-tira" class="tira">
+        <img
+            id="foto-rasgada-img"
+            src={foto}
+            alt={alt}
+            width="1500"
+            height="920"
+            class="foto"
+        />
+    </div>
+
+    <!-- La guirnalda cruza el corte, mitad sobre la crema, mitad afuera -->
+    <div id="foto-guirnalda" class="guirnalda-caja">
+        <img
+            src="/imagenes/guirnalda2.png"
+            alt=""
+            aria-hidden="true"
+            class="guirnalda"
+        />
+
+        <div id="foto-nombres" class="nombres">
+            <p class="nombre font-elegant">{novio}</p>
+            <p class="amper font-elegant">&amp;</p>
+            <p class="nombre font-elegant">{novia}</p>
+        </div>
+    </div>
+</section>
+
+<style>
+    /*
+       Sección a sangre: la foto tiene que llegar a los dos bordes de la
+       columna, así que acá no va padding lateral. El de abajo es para la
+       guirnalda, que se sale de la tira crema.
+    */
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0 0 26%;
+    }
+
+    /*
+       La tira crema. Los dos rasgados no son un zigzag inventado: son el
+       contorno del diseño leído píxel por píxel, columna por columna, y
+       pasado a puntos de clip-path. Por eso el filo es irregular de
+       verdad, con tramos largos y muescas sueltas, como el papel roto.
+    */
+    .tira {
+        position: relative;
+        width: 100%;
+        background: #eee9cb;
+        /* El alto es el de la foto (61.3%) más lo que asoma la crema (28.9%) */
+        padding-bottom: 28.9%;
+        clip-path: polygon(
+            0 0,
+            100% 0,
+            98.9% 98.3%,
+            97.9% 98.1%,
+            96.8% 97.6%,
+            95.7% 96.7%,
+            94.7% 96%,
+            93.6% 95.8%,
+            91.5% 96%,
+            90.4% 95.5%,
+            89.4% 95.8%,
+            88.3% 96.2%,
+            87.2% 97.2%,
+            86.2% 97.4%,
+            85.1% 97.6%,
+            84% 97.9%,
+            83% 98.1%,
+            81.9% 98.1%,
+            80.9% 97.6%,
+            79.8% 97.4%,
+            78.7% 96.9%,
+            77.7% 97.4%,
+            76.6% 97.6%,
+            74.5% 98.3%,
+            73.4% 98.6%,
+            72.3% 98.8%,
+            71.3% 99.1%,
+            70.2% 98.2%,
+            69.1% 98.3%,
+            68.1% 98.6%,
+            67% 99%,
+            66% 99.6%,
+            64.9% 100%,
+            63.8% 100%,
+            62.8% 100%,
+            61.7% 100%,
+            60.6% 100%,
+            59.6% 100%,
+            58.5% 100%,
+            57.4% 99.6%,
+            56.4% 99.1%,
+            55.3% 98.8%,
+            54.3% 98.6%,
+            53.2% 98.6%,
+            52.1% 98.7%,
+            51.1% 98.8%,
+            50% 98.8%,
+            48.9% 98.7%,
+            47.9% 98.5%,
+            46.8% 98.3%,
+            45.7% 98%,
+            44.7% 98%,
+            43.6% 98.1%,
+            42.6% 98.5%,
+            41.5% 99%,
+            40.4% 99.7%,
+            39.4% 100%,
+            38.3% 100%,
+            37.2% 100%,
+            36.2% 100%,
+            35.1% 100%,
+            34% 100%,
+            33% 100%,
+            31.9% 100%,
+            30.9% 100%,
+            29.8% 99.8%,
+            28.7% 99.7%,
+            27.7% 99.8%,
+            26.6% 98.3%,
+            25.5% 98.3%,
+            24.5% 98.3%,
+            22.3% 99.3%,
+            21.3% 100%,
+            20.2% 99.8%,
+            18.1% 98.6%,
+            16% 97.9%,
+            14.9% 98.1%,
+            13.8% 98.3%,
+            12.8% 98.6%,
+            11.7% 98.8%,
+            10.6% 99.1%,
+            9.6% 99.5%,
+            7.4% 99.3%,
+            6.4% 99.3%,
+            5.3% 99.5%,
+            4.3% 99.5%,
+            3.2% 99.5%,
+            2.1% 99.5%,
+            1.1% 99.1%,
+            0 99.1%
+        );
+    }
+
+    /*
+       La foto: blanco y negro como en el diseño, y con su propio rasgado
+       abajo para que la crema asome por el corte.
+    */
+    .foto {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: grayscale(1) contrast(1.06);
+        clip-path: polygon(
+            0 0,
+            100% 0,
+            97.9% 100%,
+            95.7% 99.7%,
+            92.6% 97.6%,
+            91.5% 96.9%,
+            90.4% 96.2%,
+            88.3% 95.1%,
+            87.2% 94.1%,
+            86.2% 94.1%,
+            84% 94.1%,
+            83% 95.5%,
+            81.9% 95.5%,
+            79.8% 96.9%,
+            78.7% 97.6%,
+            77.7% 97.2%,
+            76.6% 97.2%,
+            75.5% 96.2%,
+            74.5% 96.2%,
+            73.4% 96.5%,
+            72.3% 96.5%,
+            71.3% 96.5%,
+            70.2% 96.9%,
+            69.1% 98.3%,
+            68.1% 97.6%,
+            67% 97.6%,
+            66% 97.6%,
+            64.9% 96.5%,
+            63.8% 96.9%,
+            62.8% 96.2%,
+            61.7% 95.1%,
+            60.6% 94.8%,
+            59.6% 94.4%,
+            58.5% 96.2%,
+            57.4% 95.8%,
+            56.4% 95.1%,
+            55.3% 96.5%,
+            53.2% 96.9%,
+            48.9% 96.5%,
+            47.9% 97.9%,
+            46.8% 99%,
+            45.7% 98.3%,
+            44.7% 98.6%,
+            43.6% 98.3%,
+            42.6% 96.9%,
+            41.5% 96.2%,
+            40.4% 96.5%,
+            39.4% 95.5%,
+            38.3% 95.1%,
+            37.2% 95.1%,
+            36.2% 95.8%,
+            33% 97.2%,
+            31.9% 96.9%,
+            30.9% 97.2%,
+            26.6% 96.5%,
+            24.5% 96.9%,
+            22.3% 96.9%,
+            21.3% 95.8%,
+            20.2% 95.1%,
+            19.1% 94.1%,
+            17% 93.8%,
+            16% 93.8%,
+            14.9% 92.7%,
+            12.8% 95.1%,
+            11.7% 95.1%,
+            10.6% 95.5%,
+            9.6% 95.1%,
+            7.4% 95.8%,
+            6.4% 96.2%,
+            5.3% 96.2%,
+            4.3% 95.8%,
+            1.1% 96.5%,
+            0 96.5%
+        );
+    }
+
+    /*
+       La guirnalda: centrada y arrancando al 69.4% del ancho contado desde
+       el borde de arriba de la tira, que es donde cae en el diseño. Lleva
+       container-type para que los nombres se midan contra ella.
+    */
+    .guirnalda-caja {
+        position: absolute;
+        left: 50%;
+        margin-left: -20.5%;
+        top: 69.4%;
+        width: 41%;
+        container-type: inline-size;
+    }
+
+    .guirnalda {
+        display: block;
+        width: 100%;
+        height: auto;
+        user-select: none;
+    }
+
+    /* ── Nombres, en el centro de la guirnalda ─────────────── */
+    .nombres {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .nombre {
+        color: #3d300d;
+        font-size: 15cqw;
+        line-height: 1.05;
+    }
+
+    /* Más chico y corrido a la derecha, como en el diseño */
+    .amper {
+        color: #3d300d;
+        font-size: 9cqw;
+        line-height: 1;
+        margin: -0.1em 0 -0.1em 1.7em;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const tira = document.getElementById("foto-tira");
+        const foto = document.getElementById("foto-rasgada-img");
+        const guirnalda = document.getElementById("foto-guirnalda");
+        if (!tira || !foto) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        const disparador = {
+            trigger: tira,
+            start: "top 85%",
+            toggleActions: "play none none reset",
+        };
+
+        // La foto arranca ampliada y se va acomodando: un respiro, no un
+        // efecto. El clip-path de la tira contiene el zoom.
+        gsap.fromTo(
+            foto,
+            { scale: 1.18 },
+            {
+                scale: 1,
+                duration: 2.4,
+                ease: "power2.out",
+                scrollTrigger: disparador,
+            },
+        );
+
+        gsap.fromTo(
+            tira,
+            { opacity: 0 },
+            {
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: disparador,
+            },
+        );
+
+        if (guirnalda) {
+            const nombres = Array.from(
+                guirnalda.querySelectorAll("#foto-nombres > *"),
+            );
+
+            gsap.fromTo(
+                guirnalda.querySelector(".guirnalda"),
+                { opacity: 0, scale: 0.88 },
+                {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 1.2,
+                    delay: 0.4,
+                    ease: "power2.out",
+                    scrollTrigger: disparador,
+                },
+            );
+
+            gsap.fromTo(
+                nombres,
+                { opacity: 0, y: 14 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: 0.8,
+                    stagger: 0.18,
+                    ease: "power2.out",
+                    scrollTrigger: disparador,
+                },
+            );
+        }
+    });
+</script>

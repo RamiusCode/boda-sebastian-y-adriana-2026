@@ -1,0 +1,418 @@
+---
+// src/components/RecepcionSocial.astro
+// Hermana de CeremoniaReligiosa: franja de papel crema rasgada con el
+// "Recepción Social", y debajo la ilustración del salón, el texto y el
+// botón del mapa. Las flores entran por la esquina de arriba a la derecha.
+//
+//
+// Medidas del diseño, en % del ancho de la columna:
+//   banda            20.5% de alto
+//   flores           30% de ancho
+//   ilustración      16.4% de ancho
+//   botón            32.7% de ancho
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Recepción Social";
+
+const lineas = [
+    "Pasada la ceremonia religiosa, los",
+    "esperamos en la recepción social",
+    "a realizarse en el salón Los Duendes",
+    "Camino al Valle de Ananta # 777 a",
+    "300 metros del peaje de lipari",
+];
+
+/*
+   La acuarela del salón, arriba de la dirección. Si se deja vacía, el
+   hueco directamente no se dibuja.
+*/
+const ilustracion = "/imagenes/recepcion.png";
+
+const textoBoton = "Ubicación";
+// Búsqueda en Google Maps por la dirección. Si tenés el enlace corto del
+// lugar (maps.app.goo.gl/...), pegalo acá y listo.
+const mapa =
+    "https://maps.app.goo.gl/ZhNBh36z4weoY8Ld7";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="recepcion-social" class="seccion">
+    <div class="marco-banda">
+        <!--
+           Flores entrando por la esquina de arriba a la derecha. Van
+           adentro de una caja: la caja es la que se anima y la imagen se
+           queda con su volteo, sin que uno pise al otro.
+        -->
+        <span class="caja-flores" aria-hidden="true">
+            <img
+                src="/imagenes/florlateral.png"
+                alt=""
+                width="440"
+                height="482"
+                class="flores"
+            />
+        </span>
+
+        <div id="banda-recepcion" class="banda">
+            <h2 class="titulo font-elegant">{titulo}</h2>
+        </div>
+    </div>
+
+    <div id="cuerpo-recepcion" class="cuerpo">
+        {
+            ilustracion && (
+                <img
+                    src={ilustracion}
+                    alt=""
+                    aria-hidden="true"
+                    class="ilustracion"
+                />
+            )
+        }
+
+        <div class="direccion">
+            {lineas.map((linea) => <p class="linea font-freestyle">{linea}</p>)}
+        </div>
+
+        <a
+            class="boton font-cormorant"
+            href={mapa}
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            {textoBoton}
+        </a>
+
+    </div>
+</section>
+
+<style>
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0 0 3.5rem;
+    }
+
+    /* Sin recorte propio: las flores tienen que pisar la banda */
+    .marco-banda {
+        position: relative;
+        width: 100%;
+    }
+
+    /*
+       La caja lleva la posición y es la que anima GSAP; la imagen guarda
+       el volteo. Separadas a propósito: si la animación tocara la misma
+       imagen que lleva los scale en -1, GSAP leería esos menos como media
+       vuelta y el ramo giraría como un trompo al entrar.
+    */
+    .caja-flores {
+        position: absolute;
+        pointer-events: none;
+        filter: drop-shadow(0 6px 10px rgba(90, 70, 20, 0.18));
+    }
+
+    .flores {
+        display: block;
+        width: 100%;
+        height: auto;
+        user-select: none;
+    }
+
+    /*
+       Las mismas medidas que en el Contador, pero de este lado: volteada
+       en vertical para que los tulipanes miren hacia arriba, y espejada en
+       horizontal para que el ramo se abra hacia afuera.
+    */
+    .caja-flores {
+        top: -3.5rem;
+        right: -1.5rem;
+        width: 30%;
+        z-index: 2;
+    }
+
+    /* El volteo vive acá, en la imagen, y no en la caja que se anima */
+    .flores {
+        transform: scaleY(-1) scaleX(-1);
+    }
+
+
+    /*
+       La banda de papel: el mismo rasgado del modelo, con el trazo corrido
+       (13 arriba y 33 abajo) para que no repita el de las otras franjas.
+    */
+    .banda {
+        position: relative;
+        width: 100%;
+        background: #f7f3d3;
+        padding: 2.6rem 1.8rem 2.8rem;
+        clip-path: polygon(
+            0.00% 4.33%,
+            1.82% 7.05%,
+            3.64% 5.69%,
+            5.45% 3.71%,
+            7.27% 2.14%,
+            9.09% 1.75%,
+            10.91% 2.50%,
+            12.73% 3.40%,
+            14.55% 5.33%,
+            16.36% 4.30%,
+            18.18% 5.93%,
+            20.00% 6.47%,
+            21.82% 6.21%,
+            23.64% 4.14%,
+            25.45% 5.07%,
+            27.27% 5.17%,
+            29.09% 6.42%,
+            30.91% 5.33%,
+            32.73% 5.17%,
+            34.55% 4.87%,
+            36.36% 3.99%,
+            38.18% 2.21%,
+            40.00% 2.09%,
+            41.82% 0.51%,
+            43.64% 1.63%,
+            45.45% 2.75%,
+            47.27% 2.97%,
+            49.09% 4.20%,
+            50.91% 6.82%,
+            52.73% 5.66%,
+            54.55% 5.36%,
+            56.36% 3.60%,
+            58.18% 3.56%,
+            60.00% 4.10%,
+            61.82% 3.27%,
+            63.64% 2.37%,
+            65.45% 4.14%,
+            67.27% 6.65%,
+            69.09% 5.79%,
+            70.91% 3.84%,
+            72.73% 6.00%,
+            74.55% 4.95%,
+            76.36% 5.64%,
+            78.18% 8.50%,
+            80.00% 4.15%,
+            81.82% 4.00%,
+            83.64% 4.25%,
+            85.45% 6.51%,
+            87.27% 5.98%,
+            89.09% 6.16%,
+            90.91% 5.56%,
+            92.73% 4.89%,
+            94.55% 6.00%,
+            96.36% 6.46%,
+            98.18% 6.49%,
+            100.00% 6.36%,
+            100.00% 95.13%,
+            98.18% 94.83%,
+            96.36% 94.67%,
+            94.55% 93.58%,
+            92.73% 94.83%,
+            90.91% 94.93%,
+            89.09% 95.86%,
+            87.27% 93.79%,
+            85.45% 93.53%,
+            83.64% 94.07%,
+            81.82% 95.70%,
+            80.00% 94.67%,
+            78.18% 96.60%,
+            76.36% 97.50%,
+            74.55% 98.25%,
+            72.73% 97.86%,
+            70.91% 96.29%,
+            69.09% 94.31%,
+            67.27% 92.95%,
+            65.45% 95.67%,
+            63.64% 93.64%,
+            61.82% 93.51%,
+            60.00% 93.54%,
+            58.18% 94.00%,
+            56.36% 95.11%,
+            54.55% 94.44%,
+            52.73% 93.84%,
+            50.91% 94.02%,
+            49.09% 93.49%,
+            47.27% 95.75%,
+            45.45% 96.00%,
+            43.64% 95.85%,
+            41.82% 91.50%,
+            40.00% 94.36%,
+            38.18% 95.05%,
+            36.36% 94.00%,
+            34.55% 96.16%,
+            32.73% 94.21%,
+            30.91% 93.35%,
+            29.09% 95.86%,
+            27.27% 97.63%,
+            25.45% 96.73%,
+            23.64% 95.90%,
+            21.82% 96.44%,
+            20.00% 96.40%,
+            18.18% 94.64%,
+            16.36% 94.34%,
+            14.55% 93.18%,
+            12.73% 95.80%,
+            10.91% 97.03%,
+            9.09% 97.25%,
+            7.27% 98.37%,
+            5.45% 99.49%,
+            3.64% 97.91%,
+            1.82% 97.79%,
+            0.00% 96.01%
+        );
+    }
+
+    /* Mismo tamaño y color que los otros títulos de la invitación */
+    .titulo {
+        margin: 0 auto;
+        text-align: center;
+        color: #643e1a;
+        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
+        line-height: 1.2;
+    }
+
+    /* ── El cuerpo ─────────────────────────────────────────── */
+    .cuerpo {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2.4rem 1rem 0;
+    }
+
+    .ilustracion {
+        display: block;
+        width: 34%;
+        max-width: 11rem;
+        height: auto;
+        user-select: none;
+    }
+
+    .direccion {
+        margin-top: 1.6rem;
+        text-align: center;
+    }
+
+    /* Mismo tamaño que los renglones de la ceremonia */
+    .linea {
+        color: #643e1a;
+        font-size: clamp(1.45rem, 6.5vw, 1.75rem);
+        line-height: 1.75;
+    }
+
+    /* ── El botón del mapa ─────────────────────────────────── */
+    .boton {
+        display: inline-block;
+        margin-top: 1.6rem;
+        padding: 0.55rem 2.4rem;
+        min-width: 32.7%;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #643e1a;
+        background: #fbf5de;
+        border-radius: 10px;
+        font-size: clamp(1.15rem, 5vw, 1.3rem);
+        box-shadow: 0 4px 12px rgba(90, 65, 25, 0.12);
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .boton:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(90, 65, 25, 0.18);
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const banda = document.getElementById("banda-recepcion");
+        const cuerpo = document.getElementById("cuerpo-recepcion");
+        if (!banda || !cuerpo) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        /*
+           Las flores entran creciendo desde chiquitas hasta su tamaño y
+           después quedan meciéndose despacio, como si estuvieran vivas.
+           El volteo viaja dentro de la animación (el signo de scaleX /
+           scaleY) y no en el CSS: GSAP escribe su propio transform, así
+           que si lo dejaba en la hoja de estilos se perdería al animar.
+        */
+        const flores = document.querySelector<HTMLElement>(
+            "#recepcion-social .caja-flores",
+        );
+        if (flores) {
+            gsap.fromTo(
+                flores,
+                { scale: 0.45, x: 70, opacity: 0 },
+                {
+                    scale: 1,
+                    x: 0,
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: flores,
+                        start: "top 95%",
+                        toggleActions: "play none none reset",
+                    },
+                    onComplete: () => {
+                        gsap.to(flores, {
+                            rotation: 1.6,
+                            duration: 5,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut",
+                        });
+                    },
+                },
+            );
+        }
+
+        gsap.fromTo(
+            banda.querySelector(".titulo"),
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: banda,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+
+        // La ilustración, los renglones y el botón entran uno detrás de otro
+        gsap.fromTo(
+            [
+                cuerpo.querySelector(".ilustracion"),
+                ...cuerpo.querySelectorAll(".linea"),
+                cuerpo.querySelector(".boton"),
+            ].filter(Boolean),
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                stagger: 0.1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: cuerpo,
+                    start: "top 88%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    });
+</script>

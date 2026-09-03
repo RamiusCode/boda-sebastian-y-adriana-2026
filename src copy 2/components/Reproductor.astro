@@ -432,10 +432,11 @@
 
         /*
            La melodía es una sola para toda la invitación y vive en
-           window.audioGlobal, y la crea este reproductor cuando le dan al
-           play. La portada ya no la arranca sola al abrir el sobre: para
-           eso está esta barra. Como el audio se comparte por
-           window.audioGlobal, nunca suenan dos melodías encimadas.
+           window.audioGlobal. Normalmente la crea la portada al tocar el
+           sello; si el invitado llega acá sin haber pasado por ahí (o si
+           la portada está apagada), la crea este reproductor. Así el play
+           siempre responde, y como el audio se comparte, nunca suenan dos
+           melodías encimadas.
         */
         const obtenerAudio = () => {
             let compartido = (window as any).audioGlobal as

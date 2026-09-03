@@ -1,0 +1,416 @@
+---
+// src/components/Contador.astro
+// Franja de papel crema rasgada con el "Falta Para Nuestra Boda" y las
+// flores asomando por la esquina de arriba a la izquierda; debajo, la
+// cuenta regresiva en cuatro arcos.
+//
+// Misma estructura que antes (banda + cuatro casillas); lo que cambió es
+// el vestido: la banda vino pasó a ser papel rasgado y las fuentes y los
+// colores son los de la invitación.
+//
+// Medidas del diseño, en % del ancho de la columna:
+//   banda    25.4% de alto
+//   arcos    13.7% de ancho cada uno, con 3.3% de aire entre ellos
+//   flores   30% de ancho, pisando la esquina de arriba a la izquierda
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Falta Para Nuestra Boda";
+// La boda: 19 de septiembre de 2026, 11:00 de la mañana
+const fechaBoda = "2026-09-19T11:00:00";
+// ──────────────────────────────────────────────────────────────
+
+const casillas = [
+    { id: "dias", rotulo: "Días" },
+    { id: "horas", rotulo: "Horas" },
+    { id: "minutos", rotulo: "Minutos" },
+    { id: "segundos", rotulo: "Segundos" },
+];
+---
+
+<section id="contador-boda" class="seccion">
+    <div class="marco-banda">
+        <!--
+           Las flores pisan la banda desde afuera. Van adentro de una
+           caja: la caja es la que se anima y la imagen se queda con su
+           volteo, sin que uno pise al otro.
+        -->
+        <span class="caja-flores" aria-hidden="true">
+            <img
+                src="/imagenes/florlateral.png"
+                alt=""
+                width="440"
+                height="482"
+                class="flores"
+            />
+        </span>
+
+        <div id="banda-contador" class="banda">
+            <h2 class="titulo font-elegant">{titulo}</h2>
+        </div>
+    </div>
+
+    <!-- La cuenta regresiva -->
+    <div id="contador" class="casillas" data-fecha={fechaBoda}>
+        {
+            casillas.map((casilla) => (
+                <div class="casilla">
+                    <div class="arco">
+                        <span data-campo={casilla.id} class="numero font-elegant">
+                            00
+                        </span>
+                    </div>
+                    <p class="rotulo font-cormorant">{casilla.rotulo}</p>
+                </div>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0 0 3rem;
+    }
+
+    /* Sin recorte: las flores tienen que poder salirse de la banda */
+    .marco-banda {
+        position: relative;
+        width: 100%;
+    }
+
+    /*
+       La caja lleva la posición y es la que anima GSAP; la imagen guarda
+       el volteo. Separadas a propósito: si la animación tocara la misma
+       imagen que lleva el scaleY(-1), GSAP leería ese menos como media
+       vuelta y el ramo giraría como un trompo al entrar.
+    */
+    .caja-flores {
+        position: absolute;
+        top: -3.5rem;
+        left: -1.5rem;
+        width: 30%;
+        z-index: 2;
+        pointer-events: none;
+        filter: drop-shadow(0 6px 10px rgba(90, 70, 20, 0.18));
+    }
+
+    .flores {
+        display: block;
+        width: 100%;
+        height: auto;
+        user-select: none;
+        /* Volteada en vertical: los tulipanes miran para arriba */
+        transform: scaleY(-1);
+    }
+
+    /*
+       La banda de papel: el mismo rasgado del modelo, pero con el trazo
+       corrido (18 puntos arriba y 37 abajo) para que no sea calcado al de
+       la Fecha ni al del versículo.
+    */
+    .banda {
+        position: relative;
+        width: 100%;
+        background: #f7f3d3;
+        padding: 2.6rem 1.8rem 2.8rem;
+        clip-path: polygon(
+            0.00% 1.75%,
+            1.82% 2.50%,
+            3.64% 3.40%,
+            5.45% 5.33%,
+            7.27% 4.30%,
+            9.09% 5.93%,
+            10.91% 6.47%,
+            12.73% 6.21%,
+            14.55% 4.14%,
+            16.36% 5.07%,
+            18.18% 5.17%,
+            20.00% 6.42%,
+            21.82% 5.33%,
+            23.64% 5.17%,
+            25.45% 4.87%,
+            27.27% 3.99%,
+            29.09% 2.21%,
+            30.91% 2.09%,
+            32.73% 0.51%,
+            34.55% 1.63%,
+            36.36% 2.75%,
+            38.18% 2.97%,
+            40.00% 4.20%,
+            41.82% 6.82%,
+            43.64% 5.66%,
+            45.45% 5.36%,
+            47.27% 3.60%,
+            49.09% 3.56%,
+            50.91% 4.10%,
+            52.73% 3.27%,
+            54.55% 2.37%,
+            56.36% 4.14%,
+            58.18% 6.65%,
+            60.00% 5.79%,
+            61.82% 3.84%,
+            63.64% 6.00%,
+            65.45% 4.95%,
+            67.27% 5.64%,
+            69.09% 8.50%,
+            70.91% 4.15%,
+            72.73% 4.00%,
+            74.55% 4.25%,
+            76.36% 6.51%,
+            78.18% 5.98%,
+            80.00% 6.16%,
+            81.82% 5.56%,
+            83.64% 4.89%,
+            85.45% 6.00%,
+            87.27% 6.46%,
+            89.09% 6.49%,
+            90.91% 6.36%,
+            92.73% 4.33%,
+            94.55% 7.05%,
+            96.36% 5.69%,
+            98.18% 3.71%,
+            100.00% 2.14%,
+            100.00% 99.49%,
+            98.18% 97.91%,
+            96.36% 97.79%,
+            94.55% 96.01%,
+            92.73% 95.13%,
+            90.91% 94.83%,
+            89.09% 94.67%,
+            87.27% 93.58%,
+            85.45% 94.83%,
+            83.64% 94.93%,
+            81.82% 95.86%,
+            80.00% 93.79%,
+            78.18% 93.53%,
+            76.36% 94.07%,
+            74.55% 95.70%,
+            72.73% 94.67%,
+            70.91% 96.60%,
+            69.09% 97.50%,
+            67.27% 98.25%,
+            65.45% 97.86%,
+            63.64% 96.29%,
+            61.82% 94.31%,
+            60.00% 92.95%,
+            58.18% 95.67%,
+            56.36% 93.64%,
+            54.55% 93.51%,
+            52.73% 93.54%,
+            50.91% 94.00%,
+            49.09% 95.11%,
+            47.27% 94.44%,
+            45.45% 93.84%,
+            43.64% 94.02%,
+            41.82% 93.49%,
+            40.00% 95.75%,
+            38.18% 96.00%,
+            36.36% 95.85%,
+            34.55% 91.50%,
+            32.73% 94.36%,
+            30.91% 95.05%,
+            29.09% 94.00%,
+            27.27% 96.16%,
+            25.45% 94.21%,
+            23.64% 93.35%,
+            21.82% 95.86%,
+            20.00% 97.63%,
+            18.18% 96.73%,
+            16.36% 95.90%,
+            14.55% 96.44%,
+            12.73% 96.40%,
+            10.91% 94.64%,
+            9.09% 94.34%,
+            7.27% 93.18%,
+            5.45% 95.80%,
+            3.64% 97.03%,
+            1.82% 97.25%,
+            0.00% 98.37%
+        );
+    }
+
+    /* Mismo tamaño y color que el título de la Fecha */
+    .titulo {
+        margin: 0 auto;
+        max-width: 20rem;
+        text-align: center;
+        color: #643e1a;
+        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
+        line-height: 1.2;
+    }
+
+    /* ── La cuenta regresiva ───────────────────────────────── */
+    .casillas {
+        display: flex;
+        justify-content: center;
+        gap: 3.3%;
+        width: 100%;
+        max-width: 23rem;
+        margin: 0 auto;
+        padding: 3rem 1.2rem 0;
+    }
+
+    /*
+       min-width 0: sin esto el rótulo más largo ("Segundos") ensancha su
+       columna y los cuatro arcos dejan de medir igual.
+    */
+    .casilla {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+    }
+
+    /* El arco: medio punto arriba y las esquinas de abajo apenas suaves */
+    .arco {
+        width: 100%;
+        aspect-ratio: 70 / 83;
+        background: #6b4e14;
+        border-radius: 999px 999px 6px 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* El número se mide contra el ancho del arco */
+        container-type: inline-size;
+    }
+
+    .numero {
+        color: #e6e1d8;
+        font-size: 46cqw;
+        line-height: 1;
+    }
+
+    .rotulo {
+        margin-top: 0.5rem;
+        color: #643e1a;
+        font-size: clamp(1rem, 4.5vw, 1.2rem);
+        line-height: 1.2;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const caja = document.getElementById("contador");
+        const banda = document.getElementById("banda-contador");
+        if (!caja) return;
+
+        // ── La cuenta ───────────────────────────────────────────
+        const destino = new Date(caja.dataset.fecha ?? "").getTime();
+        const campo = (n: string) =>
+            caja.querySelector<HTMLElement>(`[data-campo="${n}"]`);
+        const dias = campo("dias");
+        const horas = campo("horas");
+        const minutos = campo("minutos");
+        const segundos = campo("segundos");
+
+        const dosDigitos = (n: number) => n.toString().padStart(2, "0");
+
+        const refrescar = () => {
+            const falta = destino - Date.now();
+
+            if (!isFinite(destino)) return;
+
+            // Ya pasó la fecha: todo en cero, y no hace falta seguir
+            if (falta <= 0) {
+                if (dias) dias.textContent = "00";
+                if (horas) horas.textContent = "00";
+                if (minutos) minutos.textContent = "00";
+                if (segundos) segundos.textContent = "00";
+                clearInterval(reloj);
+                return;
+            }
+
+            const s = Math.floor(falta / 1000);
+            if (dias) dias.textContent = dosDigitos(Math.floor(s / 86400));
+            if (horas) horas.textContent = dosDigitos(Math.floor(s / 3600) % 24);
+            if (minutos) minutos.textContent = dosDigitos(Math.floor(s / 60) % 60);
+            if (segundos) segundos.textContent = dosDigitos(s % 60);
+        };
+
+        refrescar();
+        const reloj = setInterval(refrescar, 1000);
+
+        // ── Entrada ─────────────────────────────────────────────
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        /*
+           Las flores entran creciendo desde chiquitas hasta su tamaño y
+           después quedan meciéndose despacio, como si estuvieran vivas.
+
+           Se anima la CAJA y no la imagen: la imagen lleva el scaleY(-1)
+           y GSAP lee ese menos como media vuelta, así que si la animara a
+           ella el ramo giraría como un trompo.
+        */
+        const flores = document.querySelector<HTMLElement>(
+            "#contador-boda .caja-flores",
+        );
+        if (flores) {
+            gsap.fromTo(
+                flores,
+                { scale: 0.45, x: -70, opacity: 0 },
+                {
+                    scale: 1,
+                    x: 0,
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: flores,
+                        start: "top 95%",
+                        toggleActions: "play none none reset",
+                    },
+                    onComplete: () => {
+                        gsap.to(flores, {
+                            rotation: 1.6,
+                            duration: 5,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut",
+                        });
+                    },
+                },
+            );
+        }
+
+        if (banda) {
+            gsap.fromTo(
+                banda.querySelector(".titulo"),
+                { opacity: 0, y: 16 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: banda,
+                        start: "top 85%",
+                        toggleActions: "play none none reset",
+                    },
+                },
+            );
+        }
+
+        gsap.fromTo(
+            caja.children,
+            { opacity: 0, y: 20 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.12,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: caja,
+                    start: "top 88%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    });
+</script>

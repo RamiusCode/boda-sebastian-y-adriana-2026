@@ -1,0 +1,513 @@
+---
+// src/components/Cronograma.astro
+// Franja de papel crema rasgada con el "Cronograma" y, debajo, la tarjeta
+// blanca con el recorrido de la fiesta: las ocho acuarelas en zigzag y las
+// siete cuerdas que las van uniendo.
+//
+// ── CÓMO ESTÁ ARMADO ──────────────────────────────────────────
+// La tarjeta tiene proporción fija (284 x 390) y todo lo de adentro va en
+// posición absoluta, en % de la tarjeta. Así el zigzag se mantiene igual
+// en cualquier pantalla: si el ancho cambia, el alto cambia con él y las
+// piezas acompañan.
+//
+// El orden es el que se ve al recorrerlo: religioso, línea 1, salón,
+// línea 2, vals, línea 3, brindis... y así hasta la despedida.
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Cronograma";
+
+// Las dos columnas del zigzag, en % del ancho de la tarjeta. Están
+// espejadas respecto al centro para que el recorrido se vea a plomo.
+const COL_IZQ = 29.8;
+const COL_DER = 70.2;
+
+// x = la columna · y = borde de arriba del DIBUJO · w = ancho de la caja.
+// Los tres en % de la tarjeta.
+//
+// Ojo con el y: no es el borde de la caja del <img> sino el del dibujo en
+// sí (ver `tinta` más abajo). En cada columna los pasos están separados de
+// modo que el rótulo de uno termine ~8 px (de los 284 del diseño) antes de
+// que arranque el dibujo del siguiente; con las medidas originales del
+// mockup el "11:00" del religioso caía sobre el vestido del vals, el
+// "15:30" sobre la cena y el "16:00" sobre la torta.
+const pasos = [
+    { img: "religioso", nombre: "Religioso", hora: "11:00", x: COL_IZQ, y: 3.1, w: 18.8 },
+    { img: "salon", nombre: "Salón", hora: "14:00", x: COL_DER, y: 5.9, w: 15.8 },
+    { img: "vals", nombre: "Vals", hora: "15:00", x: COL_IZQ, y: 27.3, w: 11.2 },
+    { img: "brindis", nombre: "Brindis", hora: "15:30", x: COL_DER, y: 31.2, w: 12.9 },
+    { img: "fiesta", nombre: "Fiesta", hora: "16:00", x: COL_IZQ, y: 48.9, w: 12.9 },
+    { img: "cena", nombre: "Cena", hora: "19:00", x: COL_DER, y: 53.0, w: 12.9 },
+    { img: "torta", nombre: "Torta", hora: "20:00", x: COL_IZQ, y: 73.9, w: 14.1 },
+    { img: "despedida", nombre: "Despedida de los Novios", hora: "", x: COL_DER, y: 78.1, w: 12.9 },
+];
+
+// Las cuerdas que unen un paso con el siguiente. Acá x es el borde
+// izquierdo, no el centro. Cada una queda colgada entre los dos dibujos
+// que une, en el mismo lugar relativo que tenía en el mockup.
+const lineas = [
+    { n: 1, x: 38.7, y: 9.0, w: 22.8 },
+    { n: 2, x: 40.2, y: 21.0, w: 25.8 },
+    { n: 3, x: 36.1, y: 32.0, w: 27.7 },
+    { n: 4, x: 37.0, y: 40.6, w: 24.7 },
+    { n: 5, x: 38.5, y: 55.6, w: 27.2 },
+    { n: 6, x: 42.3, y: 66.9, w: 21.3 },
+    { n: 7, x: 44.2, y: 75.1, w: 19.4 },
+];
+
+/*
+   Las ocho acuarelas vienen con transparente de sobra alrededor, y cada
+   una con distinto margen: la cena tiene el dibujo un 10% corrido a la
+   izquierda de su archivo, el brindis un 7,8%, el vals un 6,4% a la
+   derecha, y la torta arrastra casi un cuarto de alto vacío abajo. Si se
+   las apoya por la caja del <img>, el dibujo queda descentrado respecto a
+   su rótulo y las columnas se ven chuecas aunque las x sean iguales.
+
+   Acá va, medido del canal alfa de cada PNG, el tamaño del archivo y la
+   caja de la tinta (lo que de verdad se ve). Si algún día se cambia una
+   acuarela, hay que volver a medirla.
+*/
+const tinta = {
+    religioso: { w: 259, h: 278, x0: 31, x1: 238, y0: 5, y1: 246 },
+    salon: { w: 252, h: 239, x0: 5, x1: 223, y0: 30, y1: 225 },
+    vals: { w: 210, h: 287, x0: 29, x1: 208, y0: 9, y1: 269 },
+    brindis: { w: 204, h: 245, x0: 5, x1: 167, y0: 20, y1: 223 },
+    fiesta: { w: 178, h: 298, x0: 11, x1: 156, y0: 10, y1: 267 },
+    cena: { w: 240, h: 214, x0: 9, x1: 183, y0: 9, y1: 197 },
+    torta: { w: 217, h: 289, x0: 22, x1: 205, y0: 4, y1: 221 },
+    despedida: { w: 203, h: 185, x0: 7, x1: 189, y0: 12, y1: 175 },
+};
+
+/*
+   De esa medición salen los tres corrimientos de cada dibujo:
+
+     dx      lo corre en horizontal hasta que la tinta queda centrada en la
+             columna (va en % del ancho del propio <img>).
+     arriba  se come el transparente de arriba, así el y de la tabla es el
+             borde real del dibujo.
+     abajo   se come el del pie, así el rótulo queda siempre a la misma
+             distancia del dibujo y no flotando (el caso de la torta).
+
+   arriba y abajo van en % del ancho del paso, que es contra lo que el
+   navegador resuelve los márgenes en %.
+*/
+const ajuste = (img: string) => {
+    const t = tinta[img as keyof typeof tinta];
+    const alto = (t.h / t.w) * 100; // alto del <img>, en % de su ancho
+    const centro = ((t.x0 + (t.x1 - t.x0 + 1) / 2) / t.w) * 100;
+    return {
+        dx: 50 - centro,
+        arriba: -(t.y0 / t.h) * alto,
+        abajo: -((t.h - 1 - t.y1) / t.h) * alto,
+    };
+};
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="cronograma" class="seccion">
+    <div class="marco-banda">
+        <!-- Flores entrando por la esquina de arriba a la izquierda -->
+        <img
+            src="/imagenes/florlateral2.png"
+            alt=""
+            aria-hidden="true"
+            width="756"
+            height="960"
+            class="flores flores-arriba"
+        />
+
+        <div id="banda-cronograma" class="banda">
+            <h2 class="titulo font-elegant">{titulo}</h2>
+        </div>
+    </div>
+
+    <div class="marco-tarjeta">
+        <div id="tarjeta-cronograma" class="tarjeta">
+            <!--
+               Las cuerdas van primero en el markup para que las acuarelas
+               les pasen por encima donde se tocan.
+            -->
+            {
+                lineas.map((linea) => (
+                    <img
+                        src={`/imagenes/linea${linea.n}.png`}
+                        alt=""
+                        aria-hidden="true"
+                        class="linea"
+                        style={`left:${linea.x}%; top:${linea.y}%; width:${linea.w}%`}
+                    />
+                ))
+            }
+
+            {
+                pasos.map((paso) => {
+                    const a = ajuste(paso.img);
+                    return (
+                    <div
+                        class="paso"
+                        style={`left:${paso.x}%; top:${paso.y}%; width:${paso.w}%`}
+                    >
+                        <img
+                            src={`/imagenes/${paso.img}.png`}
+                            alt=""
+                            aria-hidden="true"
+                            class="dibujo"
+                            style={`transform:translateX(${a.dx.toFixed(2)}%); margin-top:${a.arriba.toFixed(2)}%; margin-bottom:${a.abajo.toFixed(2)}%`}
+                        />
+                        <p class="rotulo font-freestyle">
+                            {paso.nombre}
+                            {paso.hora && (
+                                <>
+                                    <br />
+                                    {paso.hora}
+                                </>
+                            )}
+                        </p>
+                    </div>
+                    );
+                })
+            }
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0 0 3.5rem;
+    }
+
+    /* Sin recorte propio: las flores tienen que pisar la banda */
+    .marco-banda {
+        position: relative;
+        width: 100%;
+    }
+
+    .flores {
+        position: absolute;
+        height: auto;
+        z-index: 2;
+        pointer-events: none;
+        user-select: none;
+        filter: drop-shadow(0 6px 10px rgba(90, 70, 20, 0.18));
+    }
+
+    /*
+       z-index 0 la manda DETRÁS del papel: la banda va con z-index 1 y le
+       tapa la parte de abajo, así el ramo asoma por el filo rasgado.
+       Este ramo va derecho, sin voltear: ya viene con los tulipanes
+       mirando hacia arriba.
+    */
+    .flores-arriba {
+        top: -7rem;
+        left: -1rem;
+        width: 24%;
+        z-index: 0;
+    }
+
+
+    /*
+       La banda de papel: el mismo rasgado del modelo, con el trazo corrido
+       (44 arriba y 21 abajo) para que no repita el de las otras franjas.
+    */
+    .banda {
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        background: #f7f3d3;
+        padding: 2.6rem 1.8rem 2.8rem;
+        clip-path: polygon(
+            0.00% 3.60%,
+            1.82% 3.56%,
+            3.64% 4.10%,
+            5.45% 3.27%,
+            7.27% 2.37%,
+            9.09% 4.14%,
+            10.91% 6.65%,
+            12.73% 5.79%,
+            14.55% 3.84%,
+            16.36% 6.00%,
+            18.18% 4.95%,
+            20.00% 5.64%,
+            21.82% 8.50%,
+            23.64% 4.15%,
+            25.45% 4.00%,
+            27.27% 4.25%,
+            29.09% 6.51%,
+            30.91% 5.98%,
+            32.73% 6.16%,
+            34.55% 5.56%,
+            36.36% 4.89%,
+            38.18% 6.00%,
+            40.00% 6.46%,
+            41.82% 6.49%,
+            43.64% 6.36%,
+            45.45% 4.33%,
+            47.27% 7.05%,
+            49.09% 5.69%,
+            50.91% 3.71%,
+            52.73% 2.14%,
+            54.55% 1.75%,
+            56.36% 2.50%,
+            58.18% 3.40%,
+            60.00% 5.33%,
+            61.82% 4.30%,
+            63.64% 5.93%,
+            65.45% 6.47%,
+            67.27% 6.21%,
+            69.09% 4.14%,
+            70.91% 5.07%,
+            72.73% 5.17%,
+            74.55% 6.42%,
+            76.36% 5.33%,
+            78.18% 5.17%,
+            80.00% 4.87%,
+            81.82% 3.99%,
+            83.64% 2.21%,
+            85.45% 2.09%,
+            87.27% 0.51%,
+            89.09% 1.63%,
+            90.91% 2.75%,
+            92.73% 2.97%,
+            94.55% 4.20%,
+            96.36% 6.82%,
+            98.18% 5.66%,
+            100.00% 5.36%,
+            100.00% 96.60%,
+            98.18% 97.50%,
+            96.36% 98.25%,
+            94.55% 97.86%,
+            92.73% 96.29%,
+            90.91% 94.31%,
+            89.09% 92.95%,
+            87.27% 95.67%,
+            85.45% 93.64%,
+            83.64% 93.51%,
+            81.82% 93.54%,
+            80.00% 94.00%,
+            78.18% 95.11%,
+            76.36% 94.44%,
+            74.55% 93.84%,
+            72.73% 94.02%,
+            70.91% 93.49%,
+            69.09% 95.75%,
+            67.27% 96.00%,
+            65.45% 95.85%,
+            63.64% 91.50%,
+            61.82% 94.36%,
+            60.00% 95.05%,
+            58.18% 94.00%,
+            56.36% 96.16%,
+            54.55% 94.21%,
+            52.73% 93.35%,
+            50.91% 95.86%,
+            49.09% 97.63%,
+            47.27% 96.73%,
+            45.45% 95.90%,
+            43.64% 96.44%,
+            41.82% 96.40%,
+            40.00% 94.64%,
+            38.18% 94.34%,
+            36.36% 93.18%,
+            34.55% 95.80%,
+            32.73% 97.03%,
+            30.91% 97.25%,
+            29.09% 98.37%,
+            27.27% 99.49%,
+            25.45% 97.91%,
+            23.64% 97.79%,
+            21.82% 96.01%,
+            20.00% 95.13%,
+            18.18% 94.83%,
+            16.36% 94.67%,
+            14.55% 93.58%,
+            12.73% 94.83%,
+            10.91% 94.93%,
+            9.09% 95.86%,
+            7.27% 93.79%,
+            5.45% 93.53%,
+            3.64% 94.07%,
+            1.82% 95.70%,
+            0.00% 94.67%
+        );
+    }
+
+    /* Mismo tamaño y color que los otros títulos de la invitación */
+    .titulo {
+        margin: 0 auto;
+        text-align: center;
+        color: #643e1a;
+        font-size: clamp(2.35rem, 10.7vw, 2.9rem);
+        line-height: 1.2;
+    }
+
+    /* ── La tarjeta del recorrido ──────────────────────────── */
+    .marco-tarjeta {
+        position: relative;
+        width: 100%;
+        padding: 2.6rem 0 0;
+    }
+
+    /*
+       Proporción fija: el ancho del diseño (284) por 390 de alto — el mockup
+       traía 365, pero ahí los rótulos de dos renglones se comían el dibujo
+       de abajo.
+       Como todo adentro va en % de la tarjeta, al cambiar el ancho el alto
+       lo sigue y el zigzag no se descuadra.
+       container-type deja medir los rótulos contra la tarjeta.
+    */
+    .tarjeta {
+        position: relative;
+        width: 84%;
+        max-width: 24rem;
+        margin: 0 auto;
+        aspect-ratio: 284 / 390;
+        padding: 4% 3%;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 12px 28px rgba(90, 65, 25, 0.13);
+        container-type: inline-size;
+    }
+
+    .linea {
+        position: absolute;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /* El translateX centra el paso en su columna */
+    .paso {
+        position: absolute;
+        transform: translateX(-50%);
+    }
+
+    /*
+       El translateX y los márgenes negativos los pone `ajuste` en línea,
+       uno por dibujo: corren el <img> hasta que la tinta queda centrada en
+       la columna y se comen el transparente de arriba y del pie.
+    */
+    .dibujo {
+        display: block;
+        width: 100%;
+        height: auto;
+        user-select: none;
+    }
+
+    /*
+       El rótulo puede ser más ancho que el dibujo ("Despedida de los
+       Novios"), así que se le da más ancho y se lo recentra con el margen
+       negativo. Si no, el nombre largo empujaría la columna.
+
+       El aire va en cqw y no en %: en % se mide contra el ancho del paso, y
+       como cada dibujo tiene el suyo, el hueco salía distinto en cada uno.
+    */
+    .rotulo {
+        width: 240%;
+        margin-left: -70%;
+        margin-top: 1.3cqw;
+        text-align: center;
+        color: #643e1a;
+        font-size: 4.6cqw;
+        line-height: 1.35;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const banda = document.getElementById("banda-cronograma");
+        const tarjeta = document.getElementById("tarjeta-cronograma");
+        if (!banda || !tarjeta) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        /*
+           Las flores entran creciendo desde chiquitas hasta su tamaño y
+           después quedan meciéndose despacio, como si estuvieran vivas.
+        */
+        const flores = document.querySelector<HTMLElement>(
+            "#cronograma .flores",
+        );
+        if (flores) {
+            gsap.fromTo(
+                flores,
+                { scaleX: 0.45, scaleY: 0.45, x: -70, opacity: 0 },
+                {
+                    scaleX: 1,
+                    scaleY: 1,
+                    x: 0,
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: flores,
+                        start: "top 95%",
+                        toggleActions: "play none none reset",
+                    },
+                    onComplete: () => {
+                        gsap.to(flores, {
+                            rotation: 1.6,
+                            duration: 5,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut",
+                        });
+                    },
+                },
+            );
+        }
+
+        gsap.fromTo(
+            banda.querySelector(".titulo"),
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: banda,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+
+        /*
+           El recorrido se dibuja en orden: primero el paso, después la
+           cuerda que lleva al siguiente, y así. Por eso se intercalan las
+           dos listas en vez de animar cada grupo por su cuenta.
+        */
+        const pasos = Array.from(tarjeta.querySelectorAll(".paso"));
+        const cuerdas = Array.from(tarjeta.querySelectorAll(".linea"));
+        const recorrido: Element[] = [];
+        pasos.forEach((paso, i) => {
+            recorrido.push(paso);
+            if (cuerdas[i]) recorrido.push(cuerdas[i]);
+        });
+
+        gsap.fromTo(
+            recorrido,
+            { opacity: 0, y: 14 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                stagger: 0.12,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: tarjeta,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    });
+</script>
