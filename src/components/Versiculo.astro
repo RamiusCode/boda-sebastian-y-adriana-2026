@@ -1,0 +1,217 @@
+---
+// src/components/Versiculo.astro
+// Franja de papel crema rasgada arriba y abajo, con el versículo en
+// Freestyle Script. Va a sangre: llega a los dos bordes de la columna y
+// por los desgarros asoma el papel del fondo.
+//
+// El rasgado es el mismo modelo que usa Foto1 (el de Modelo.astro): el
+// filo de abajo es ese trazo tal cual y el de arriba es el mismo espejado,
+// para que los dos no sean gemelos. Los dos van achatados al 8.5% del alto
+// de la franja.
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const versiculo =
+    "Así que no son ya más dos, sino una sola carne; por tanto, lo que Dios ha unido, no lo separe el hombre.";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="versiculo" class="seccion">
+    <div id="franja-versiculo" class="franja">
+        <p class="texto font-freestyle">{versiculo}</p>
+    </div>
+</section>
+
+<style>
+    /* A sangre: la franja tiene que llegar a los dos bordes */
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0;
+    }
+
+    .franja {
+        position: relative;
+        width: 100%;
+        background: #f7f3d3;
+        /* El aire de arriba y abajo deja lugar para los dos desgarros */
+        padding: 4rem 1.8rem 4.2rem;
+        clip-path: polygon(
+            0.00% 5.64%,
+            1.82% 4.95%,
+            3.64% 6.00%,
+            5.45% 3.84%,
+            7.27% 5.79%,
+            9.09% 6.65%,
+            10.91% 4.14%,
+            12.73% 2.37%,
+            14.55% 3.27%,
+            16.36% 4.10%,
+            18.18% 3.56%,
+            20.00% 3.60%,
+            21.82% 5.36%,
+            23.64% 5.66%,
+            25.45% 6.82%,
+            27.27% 4.20%,
+            29.09% 2.97%,
+            30.91% 2.75%,
+            32.73% 1.63%,
+            34.55% 0.51%,
+            36.36% 2.09%,
+            38.18% 2.21%,
+            40.00% 3.99%,
+            41.82% 4.87%,
+            43.64% 5.17%,
+            45.45% 5.33%,
+            47.27% 6.42%,
+            49.09% 5.17%,
+            50.91% 5.07%,
+            52.73% 4.14%,
+            54.55% 6.21%,
+            56.36% 6.47%,
+            58.18% 5.93%,
+            60.00% 4.30%,
+            61.82% 5.33%,
+            63.64% 3.40%,
+            65.45% 2.50%,
+            67.27% 1.75%,
+            69.09% 2.14%,
+            70.91% 3.71%,
+            72.73% 5.69%,
+            74.55% 7.05%,
+            76.36% 4.33%,
+            78.18% 6.36%,
+            80.00% 6.49%,
+            81.82% 6.46%,
+            83.64% 6.00%,
+            85.45% 4.89%,
+            87.27% 5.56%,
+            89.09% 6.16%,
+            90.91% 5.98%,
+            92.73% 6.51%,
+            94.55% 4.25%,
+            96.36% 4.00%,
+            98.18% 4.15%,
+            100.00% 8.50%,
+            100.00% 94.36%,
+            98.18% 95.05%,
+            96.36% 94.00%,
+            94.55% 96.16%,
+            92.73% 94.21%,
+            90.91% 93.35%,
+            89.09% 95.86%,
+            87.27% 97.63%,
+            85.45% 96.73%,
+            83.64% 95.90%,
+            81.82% 96.44%,
+            80.00% 96.40%,
+            78.18% 94.64%,
+            76.36% 94.34%,
+            74.55% 93.18%,
+            72.73% 95.80%,
+            70.91% 97.03%,
+            69.09% 97.25%,
+            67.27% 98.37%,
+            65.45% 99.49%,
+            63.64% 97.91%,
+            61.82% 97.79%,
+            60.00% 96.01%,
+            58.18% 95.13%,
+            56.36% 94.83%,
+            54.55% 94.67%,
+            52.73% 93.58%,
+            50.91% 94.83%,
+            49.09% 94.93%,
+            47.27% 95.86%,
+            45.45% 93.79%,
+            43.64% 93.53%,
+            41.82% 94.07%,
+            40.00% 95.70%,
+            38.18% 94.67%,
+            36.36% 96.60%,
+            34.55% 97.50%,
+            32.73% 98.25%,
+            30.91% 97.86%,
+            29.09% 96.29%,
+            27.27% 94.31%,
+            25.45% 92.95%,
+            23.64% 95.67%,
+            21.82% 93.64%,
+            20.00% 93.51%,
+            18.18% 93.54%,
+            16.36% 94.00%,
+            14.55% 95.11%,
+            12.73% 94.44%,
+            10.91% 93.84%,
+            9.09% 94.02%,
+            7.27% 93.49%,
+            5.45% 95.75%,
+            3.64% 96.00%,
+            1.82% 95.85%,
+            0.00% 91.50%
+        );
+    }
+
+    /*
+       El texto va en mayúsculas por diseño, no en el dato: así el
+       versículo se puede leer y editar normal en el frontmatter.
+    */
+    .texto {
+        margin: 0 auto;
+        max-width: 21rem;
+        color: #643e1a;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: clamp(1.1rem, 5vw, 1.4rem);
+        line-height: 1.6;
+        letter-spacing: 0.03em;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const franja = document.getElementById("franja-versiculo");
+        if (!franja) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        const texto = franja.querySelector(".texto");
+
+        gsap.fromTo(
+            franja,
+            { opacity: 0 },
+            {
+                opacity: 1,
+                duration: 0.9,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: franja,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+
+        gsap.fromTo(
+            texto,
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 0.3,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: franja,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    });
+</script>

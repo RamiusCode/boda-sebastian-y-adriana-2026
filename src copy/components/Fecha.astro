@@ -1,0 +1,285 @@
+---
+// src/components/Fecha.astro
+// Franja de papel crema rasgada con el "Acompáñanos este día", y debajo,
+// sobre el papel de la página, los tres datos en columnas separadas por
+// dos hilitos dorados.
+//
+// Misma estructura que antes; lo que cambió es el vestido: la banda vino
+// pasó a ser papel rasgado como el del versículo, y las fuentes y los
+// colores son los del diseño.
+//
+// Medidas del diseño, en % del ancho de la columna:
+//   banda    30% de alto
+//   hilos    a 30.8% y 64.8% (o sea, tres columnas iguales)
+//   rótulos  5.9% · valores 3.4% · título 5.8%
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = ["Acompáñanos este día", "tan especial"];
+
+const datos = [
+    { rotulo: "Dia", valor: ["19", "Septiembre"] },
+    { rotulo: "Lugar", valor: ["Parroquia", "Señor de la Exaltación"] },
+    { rotulo: "Hora", valor: ["11:00", "a.m."] },
+];
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="fecha" class="seccion">
+    <!-- La franja va a sangre: llega a los dos bordes de la columna -->
+    <div id="banda-fecha" class="banda">
+        <h2 class="titulo font-elegant">
+            {titulo[0]}<br />{titulo[1]}
+        </h2>
+    </div>
+
+    <!-- Los tres datos, en columnas iguales separadas por hilos -->
+    <div id="datos-boda" class="datos">
+        {
+            datos.map((dato, i) => (
+                <>
+                    {i > 0 && <span class="hilo" aria-hidden="true" />}
+                    <div class="columna">
+                        <h3 class="rotulo font-rantera">{dato.rotulo}</h3>
+                        <p class="valor font-cormorant">
+                            {dato.valor[0]}
+                            <br />
+                            {dato.valor[1]}
+                        </p>
+                    </div>
+                </>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0 0 3rem;
+    }
+
+    /*
+       La banda de papel: mismo rasgado que el versículo, pero con el
+       trazo al revés (el original arriba y el espejado abajo) para que las
+       dos franjas no se vean calcadas.
+    */
+    .banda {
+        position: relative;
+        width: 100%;
+        background: #f7f3d3;
+        padding: 2.4rem 1.8rem 2.6rem;
+        clip-path: polygon(
+            0.00% 8.50%,
+            1.82% 4.15%,
+            3.64% 4.00%,
+            5.45% 4.25%,
+            7.27% 6.51%,
+            9.09% 5.98%,
+            10.91% 6.16%,
+            12.73% 5.56%,
+            14.55% 4.89%,
+            16.36% 6.00%,
+            18.18% 6.46%,
+            20.00% 6.49%,
+            21.82% 6.36%,
+            23.64% 4.33%,
+            25.45% 7.05%,
+            27.27% 5.69%,
+            29.09% 3.71%,
+            30.91% 2.14%,
+            32.73% 1.75%,
+            34.55% 2.50%,
+            36.36% 3.40%,
+            38.18% 5.33%,
+            40.00% 4.30%,
+            41.82% 5.93%,
+            43.64% 6.47%,
+            45.45% 6.21%,
+            47.27% 4.14%,
+            49.09% 5.07%,
+            50.91% 5.17%,
+            52.73% 6.42%,
+            54.55% 5.33%,
+            56.36% 5.17%,
+            58.18% 4.87%,
+            60.00% 3.99%,
+            61.82% 2.21%,
+            63.64% 2.09%,
+            65.45% 0.51%,
+            67.27% 1.63%,
+            69.09% 2.75%,
+            70.91% 2.97%,
+            72.73% 4.20%,
+            74.55% 6.82%,
+            76.36% 5.66%,
+            78.18% 5.36%,
+            80.00% 3.60%,
+            81.82% 3.56%,
+            83.64% 4.10%,
+            85.45% 3.27%,
+            87.27% 2.37%,
+            89.09% 4.14%,
+            90.91% 6.65%,
+            92.73% 5.79%,
+            94.55% 3.84%,
+            96.36% 6.00%,
+            98.18% 4.95%,
+            100.00% 5.64%,
+            100.00% 91.50%,
+            98.18% 95.85%,
+            96.36% 96.00%,
+            94.55% 95.75%,
+            92.73% 93.49%,
+            90.91% 94.02%,
+            89.09% 93.84%,
+            87.27% 94.44%,
+            85.45% 95.11%,
+            83.64% 94.00%,
+            81.82% 93.54%,
+            80.00% 93.51%,
+            78.18% 93.64%,
+            76.36% 95.67%,
+            74.55% 92.95%,
+            72.73% 94.31%,
+            70.91% 96.29%,
+            69.09% 97.86%,
+            67.27% 98.25%,
+            65.45% 97.50%,
+            63.64% 96.60%,
+            61.82% 94.67%,
+            60.00% 95.70%,
+            58.18% 94.07%,
+            56.36% 93.53%,
+            54.55% 93.79%,
+            52.73% 95.86%,
+            50.91% 94.93%,
+            49.09% 94.83%,
+            47.27% 93.58%,
+            45.45% 94.67%,
+            43.64% 94.83%,
+            41.82% 95.13%,
+            40.00% 96.01%,
+            38.18% 97.79%,
+            36.36% 97.91%,
+            34.55% 99.49%,
+            32.73% 98.37%,
+            30.91% 97.25%,
+            29.09% 97.03%,
+            27.27% 95.80%,
+            25.45% 93.18%,
+            23.64% 94.34%,
+            21.82% 94.64%,
+            20.00% 96.40%,
+            18.18% 96.44%,
+            16.36% 95.90%,
+            14.55% 96.73%,
+            12.73% 97.63%,
+            10.91% 95.86%,
+            9.09% 93.35%,
+            7.27% 94.21%,
+            5.45% 96.16%,
+            3.64% 94.00%,
+            1.82% 95.05%,
+            0.00% 94.36%
+        );
+    }
+
+    .titulo {
+        margin: 0 auto;
+        max-width: 20rem;
+        text-align: center;
+        color: #643e1a;
+        font-size: clamp(1.8rem, 8.2vw, 2.25rem);
+        line-height: 1.12;
+    }
+
+    /* ── Los tres datos ────────────────────────────────────── */
+    .datos {
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        padding: 3.2rem 0.7rem 0;
+    }
+
+    .columna {
+        flex: 1;
+        min-width: 0;
+        padding: 0 0.25rem;
+        text-align: center;
+    }
+
+    /* El hilito dorado que separa una columna de la otra */
+    .hilo {
+        width: 2px;
+        margin: 0.2rem 0;
+        border-radius: 2px;
+        background: #f3ebb2;
+    }
+
+    .rotulo {
+        color: #643e1a;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: clamp(1.3rem, 6vw, 1.6rem);
+        line-height: 1.3;
+        white-space: nowrap;
+    }
+
+    .valor {
+        color: #643e1a;
+        margin-top: 0.55rem;
+        font-size: clamp(1.05rem, 4.7vw, 1.25rem);
+        line-height: 1.45;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const banda = document.getElementById("banda-fecha");
+        const datos = document.getElementById("datos-boda");
+        if (!banda || !datos) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        gsap.fromTo(
+            banda.querySelector(".titulo"),
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: banda,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+
+        // Las columnas entran una detrás de otra, y los hilos con ellas
+        gsap.fromTo(
+            datos.children,
+            { opacity: 0, y: 18 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.12,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: datos,
+                    start: "top 88%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    });
+</script>

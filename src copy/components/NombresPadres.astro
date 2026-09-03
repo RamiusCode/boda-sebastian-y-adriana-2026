@@ -1,0 +1,254 @@
+---
+// src/components/NombresPadres.astro
+// Tarjeta blanca con la bendición y los nombres de los padres: las flores
+// asomando en la esquina de arriba a la izquierda y las dos cuerditas
+// (adorno.png) cruzando en diagonal, arriba a la derecha y abajo a la
+// izquierda, como en el diseño.
+//
+// Medidas del diseño, en % del ancho de la columna:
+//   tarjeta  62.7% de ancho, centrada
+//   cuerda   30% de ancho las dos, la de abajo girada media vuelta
+// Y adentro de la tarjeta, en % de SU ancho:
+//   texto    8.6% los títulos · 9.6% los nombres
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const bendicion = ["Con la bendición de Dios", "y de nuestros padres"];
+
+const padres = [
+    {
+        titulo: "Padres del novio",
+        nombres: ["Marcelo W. Vargas Salas", "Lucy R. Fernández Mansilla"],
+    },
+    {
+        titulo: "Padres de la novia",
+        nombres: ["Nicolas Torres Medina", "Marina Lara Poma"],
+    },
+];
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="nombres-padres" class="seccion">
+    <div id="marco-padres" class="marco">
+        <!-- Cuerdita de arriba, a la derecha -->
+        <img
+            src="/imagenes/adorno.png"
+            alt=""
+            aria-hidden="true"
+            class="cuerda cuerda-arriba"
+        />
+
+        <div class="tarjeta">
+            <!--
+               Las flores se salen de la esquina y la tarjeta las recorta:
+               por eso lleva overflow hidden. Es lo que hace que entren
+               "desde afuera" en vez de quedar apoyadas adentro.
+            -->
+            <img
+                src="/imagenes/florlateral.png"
+                alt=""
+                aria-hidden="true"
+                width="440"
+                height="482"
+                class="flores"
+            />
+
+            <div id="texto-padres" class="texto">
+                <p class="bendicion font-freestyle">
+                    {bendicion[0]}<br />{bendicion[1]}
+                </p>
+
+                {
+                    padres.map((grupo) => (
+                        <div class="grupo">
+                            <p class="titulo font-freestyle">{grupo.titulo}</p>
+                            {grupo.nombres.map((nombre) => (
+                                <p class="nombre font-freestyle">{nombre}</p>
+                            ))}
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- Cuerdita de abajo, a la izquierda y dada vuelta -->
+        <img
+            src="/imagenes/adorno.png"
+            alt=""
+            aria-hidden="true"
+            class="cuerda cuerda-abajo"
+        />
+    </div>
+</section>
+
+<style>
+    /* Sin padding lateral: las cuerditas se abren hacia los bordes */
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 3.5rem 0 4rem;
+    }
+
+    /*
+       El hueco de arriba y el de abajo son para las cuerditas, que quedan
+       fuera de la tarjeta.
+    */
+    .marco {
+        position: relative;
+        width: 100%;
+        padding: 7% 0 7.5%;
+    }
+
+    .cuerda {
+        position: absolute;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+        z-index: 2;
+    }
+
+    .cuerda-arriba {
+        top: 0;
+        left: 66%;
+        width: 30%;
+    }
+
+    /* La misma imagen dada vuelta: así el moño mira para el otro lado */
+    .cuerda-abajo {
+        bottom: 0;
+        left: 9.6%;
+        width: 30%;
+        transform: rotate(180deg);
+    }
+
+    .tarjeta {
+        position: relative;
+        z-index: 1;
+        width: 62.7%;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 12px 28px rgba(90, 65, 25, 0.13);
+        /* Recorta las flores en la esquina */
+        overflow: hidden;
+        /* El texto se mide contra el ancho de la tarjeta */
+        container-type: inline-size;
+    }
+
+    .flores {
+        position: absolute;
+        top: -3rem;
+        left: -1rem;
+        width: 46%;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /*
+       El padding de arriba es grande a propósito: ahí caen las flores.
+       Va en % para que crezca junto con la tarjeta.
+    */
+    .texto {
+        position: relative;
+        padding: 30% 8% 12%;
+        text-align: center;
+        color: #643e1a;
+        text-transform: uppercase;
+    }
+
+    .bendicion {
+        font-size: 8.6cqw;
+        line-height: 1.5;
+    }
+
+    .grupo {
+        margin-top: 11%;
+    }
+
+    /* El segundo bloque respira más, como en el diseño */
+    .grupo + .grupo {
+        margin-top: 13%;
+    }
+
+    .titulo {
+        font-size: 8.6cqw;
+        line-height: 1.4;
+    }
+
+    /*
+       Los nombres van tal cual se escriben en los datos, con sus
+       minúsculas: las mayúsculas quedan solo para los títulos.
+    */
+    .nombre {
+        font-size: 9.6cqw;
+        line-height: 1.4;
+        margin-top: 6%;
+        text-transform: none;
+    }
+
+    /* Padre y madre van juntitos: el aire queda solo debajo del título */
+    .nombre + .nombre {
+        margin-top: 1.5%;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const marco = document.getElementById("marco-padres");
+        const texto = document.getElementById("texto-padres");
+        if (!marco || !texto) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        const disparador = {
+            trigger: marco,
+            start: "top 85%",
+            toggleActions: "play none none reset",
+        };
+
+        gsap.fromTo(
+            marco.querySelector(".tarjeta"),
+            { opacity: 0, y: 22 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: disparador,
+            },
+        );
+
+        gsap.fromTo(
+            marco.querySelectorAll(".cuerda"),
+            { opacity: 0 },
+            {
+                opacity: 1,
+                duration: 1,
+                delay: 0.5,
+                stagger: 0.2,
+                ease: "power2.out",
+                scrollTrigger: disparador,
+            },
+        );
+
+        gsap.fromTo(
+            texto.querySelectorAll("p"),
+            { opacity: 0, y: 14 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                delay: 0.35,
+                stagger: 0.12,
+                ease: "power2.out",
+                scrollTrigger: disparador,
+            },
+        );
+    });
+</script>

@@ -1,0 +1,334 @@
+---
+// src/components/CodigoVestimenta.astro
+// Franja de papel crema rasgada con el "Código De Vestimenta" y, debajo,
+// el traje y el vestido, la palabra FORMAL y el aviso del blanco.
+//
+// A diferencia del Cronograma, acá el ramo va POR ENCIMA del papel: se
+// apoya sobre el filo rasgado en vez de asomar por detrás.
+//
+// Medidas del diseño, en % del ancho de la columna:
+//   banda        19.7% de alto
+//   vestimenta   18% de ancho
+
+// ── DATOS EDITABLES ───────────────────────────────────────────
+const titulo = "Código De Vestimenta";
+const etiqueta = "Formal";
+const aviso = "El blanco está reservado para la novia";
+// ──────────────────────────────────────────────────────────────
+---
+
+<section id="codigo-vestimenta" class="seccion">
+    <div class="marco-banda">
+        <!-- El ramo se apoya sobre el papel: va por encima (z-index 2) -->
+        <img
+            src="/imagenes/florlateral2.png"
+            alt=""
+            aria-hidden="true"
+            width="756"
+            height="960"
+            class="flores"
+        />
+
+        <div id="banda-vestimenta" class="banda">
+            <h2 class="titulo font-elegant">{titulo}</h2>
+        </div>
+    </div>
+
+    <div id="cuerpo-vestimenta" class="cuerpo">
+        <!--
+           El traje y el vestido se pintan con máscara (la clase .icono de
+           global.css): la silueta del PNG sale en el mismo marrón del
+           texto, sin tener que retocar la imagen.
+        -->
+        <span
+            class="icono prenda"
+            style="--ic: url('/imagenes/vesti.png')"
+            aria-hidden="true"></span>
+
+        <p class="etiqueta font-rantera">{etiqueta}</p>
+        <p class="aviso font-freestyle">{aviso}</p>
+    </div>
+</section>
+
+<style>
+    .seccion {
+        position: relative;
+        width: 100%;
+        padding: 0 0 3.5rem;
+    }
+
+    /* Sin recorte propio: el ramo tiene que poder salirse de la banda */
+    .marco-banda {
+        position: relative;
+        width: 100%;
+    }
+
+    /*
+       z-index 2: por delante de la banda (que va con 1). El ramo ya viene
+       con los tulipanes mirando hacia arriba, así que no se voltea.
+    */
+    .flores {
+        position: absolute;
+        top: -5rem;
+        left: -1rem;
+        width: 24%;
+        height: auto;
+        z-index: 2;
+        pointer-events: none;
+        user-select: none;
+        filter: drop-shadow(0 6px 10px rgba(90, 70, 20, 0.18));
+    }
+
+    /*
+       La banda de papel: el mismo rasgado del modelo, con el trazo corrido
+       (6 arriba y 47 abajo) para que no repita el de las otras franjas.
+    */
+    .banda {
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        background: #f7f3d3;
+        padding: 2.6rem 1.8rem 2.8rem;
+        clip-path: polygon(
+            0.00% 6.16%,
+            1.82% 5.56%,
+            3.64% 4.89%,
+            5.45% 6.00%,
+            7.27% 6.46%,
+            9.09% 6.49%,
+            10.91% 6.36%,
+            12.73% 4.33%,
+            14.55% 7.05%,
+            16.36% 5.69%,
+            18.18% 3.71%,
+            20.00% 2.14%,
+            21.82% 1.75%,
+            23.64% 2.50%,
+            25.45% 3.40%,
+            27.27% 5.33%,
+            29.09% 4.30%,
+            30.91% 5.93%,
+            32.73% 6.47%,
+            34.55% 6.21%,
+            36.36% 4.14%,
+            38.18% 5.07%,
+            40.00% 5.17%,
+            41.82% 6.42%,
+            43.64% 5.33%,
+            45.45% 5.17%,
+            47.27% 4.87%,
+            49.09% 3.99%,
+            50.91% 2.21%,
+            52.73% 2.09%,
+            54.55% 0.51%,
+            56.36% 1.63%,
+            58.18% 2.75%,
+            60.00% 2.97%,
+            61.82% 4.20%,
+            63.64% 6.82%,
+            65.45% 5.66%,
+            67.27% 5.36%,
+            69.09% 3.60%,
+            70.91% 3.56%,
+            72.73% 4.10%,
+            74.55% 3.27%,
+            76.36% 2.37%,
+            78.18% 4.14%,
+            80.00% 6.65%,
+            81.82% 5.79%,
+            83.64% 3.84%,
+            85.45% 6.00%,
+            87.27% 4.95%,
+            89.09% 5.64%,
+            90.91% 8.50%,
+            92.73% 4.15%,
+            94.55% 4.00%,
+            96.36% 4.25%,
+            98.18% 6.51%,
+            100.00% 5.98%,
+            100.00% 95.90%,
+            98.18% 96.44%,
+            96.36% 96.40%,
+            94.55% 94.64%,
+            92.73% 94.34%,
+            90.91% 93.18%,
+            89.09% 95.80%,
+            87.27% 97.03%,
+            85.45% 97.25%,
+            83.64% 98.37%,
+            81.82% 99.49%,
+            80.00% 97.91%,
+            78.18% 97.79%,
+            76.36% 96.01%,
+            74.55% 95.13%,
+            72.73% 94.83%,
+            70.91% 94.67%,
+            69.09% 93.58%,
+            67.27% 94.83%,
+            65.45% 94.93%,
+            63.64% 95.86%,
+            61.82% 93.79%,
+            60.00% 93.53%,
+            58.18% 94.07%,
+            56.36% 95.70%,
+            54.55% 94.67%,
+            52.73% 96.60%,
+            50.91% 97.50%,
+            49.09% 98.25%,
+            47.27% 97.86%,
+            45.45% 96.29%,
+            43.64% 94.31%,
+            41.82% 92.95%,
+            40.00% 95.67%,
+            38.18% 93.64%,
+            36.36% 93.51%,
+            34.55% 93.54%,
+            32.73% 94.00%,
+            30.91% 95.11%,
+            29.09% 94.44%,
+            27.27% 93.84%,
+            25.45% 94.02%,
+            23.64% 93.49%,
+            21.82% 95.75%,
+            20.00% 96.00%,
+            18.18% 95.85%,
+            16.36% 91.50%,
+            14.55% 94.36%,
+            12.73% 95.05%,
+            10.91% 94.00%,
+            9.09% 96.16%,
+            7.27% 94.21%,
+            5.45% 93.35%,
+            3.64% 95.86%,
+            1.82% 97.63%,
+            0.00% 96.73%
+        );
+    }
+
+    /* Mismo tamaño y color que los otros títulos de la invitación */
+    .titulo {
+        margin: 0 auto;
+        text-align: center;
+        color: #643e1a;
+        font-size: clamp(1.8rem, 8.2vw, 2.25rem);
+        line-height: 1.2;
+    }
+
+    /* ── El cuerpo ─────────────────────────────────────────── */
+    .cuerpo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2.4rem 1rem 0;
+        text-align: center;
+    }
+
+    /* La proporción es la del archivo (571 x 523) */
+    .prenda {
+        width: 26%;
+        max-width: 9rem;
+        aspect-ratio: 571 / 523;
+        background-color: #643e1a;
+    }
+
+    .etiqueta {
+        margin-top: 1rem;
+        color: #643e1a;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: clamp(1.35rem, 6vw, 1.7rem);
+        line-height: 1.2;
+    }
+
+    .aviso {
+        margin-top: 0.9rem;
+        color: #643e1a;
+        font-size: clamp(1.25rem, 5.6vw, 1.5rem);
+        line-height: 1.5;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const banda = document.getElementById("banda-vestimenta");
+        const cuerpo = document.getElementById("cuerpo-vestimenta");
+        if (!banda || !cuerpo) return;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+            return;
+
+        /*
+           Las flores entran creciendo desde chiquitas hasta su tamaño y
+           después quedan meciéndose despacio, como si estuvieran vivas.
+        */
+        const flores = document.querySelector<HTMLElement>(
+            "#codigo-vestimenta .flores",
+        );
+        if (flores) {
+            gsap.fromTo(
+                flores,
+                { scaleX: 0.45, scaleY: 0.45, x: -70, opacity: 0 },
+                {
+                    scaleX: 1,
+                    scaleY: 1,
+                    x: 0,
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: flores,
+                        start: "top 95%",
+                        toggleActions: "play none none reset",
+                    },
+                    onComplete: () => {
+                        gsap.to(flores, {
+                            rotation: 1.6,
+                            duration: 5,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut",
+                        });
+                    },
+                },
+            );
+        }
+
+        gsap.fromTo(
+            banda.querySelector(".titulo"),
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: banda,
+                    start: "top 85%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+
+        gsap.fromTo(
+            cuerpo.children,
+            { opacity: 0, y: 16 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                stagger: 0.14,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: cuerpo,
+                    start: "top 88%",
+                    toggleActions: "play none none reset",
+                },
+            },
+        );
+    });
+</script>
